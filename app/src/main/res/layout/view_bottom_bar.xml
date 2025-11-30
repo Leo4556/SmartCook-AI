@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottomBar"
+    android:padding="8dp"
+    android:layout_marginBottom="10dp"
+    android:background="@drawable/bottom_nav_background"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:elevation="2dp"
+    android:layout_width="match_parent"
+    android:layout_height="72dp"
+    android:layout_marginHorizontal="25dp">
+
+    <!-- HOME -->
+    <LinearLayout
+        android:id="@+id/tabHome"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@drawable/bottom_nav_item_bg">
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/ic_home"
+            app:tint="@color/colorIconDefault" />
+
+
+    </LinearLayout>
+
+    <!-- ADD -->
+    <LinearLayout
+        android:id="@+id/tabAdd"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@drawable/bottom_nav_item_bg">
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:tint="@color/colorIconDefault"
+            android:src="@drawable/ic_add" />
+
+
+    </LinearLayout>
+
+    <!-- FAV -->
+    <LinearLayout
+        android:id="@+id/tabFav"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@drawable/bottom_nav_item_bg">
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            app:tint="@color/colorIconDefault"
+            android:src="@drawable/ic_bookmark" />
+
+
+    </LinearLayout>
+
+    <!-- SETTINGS -->
+    <LinearLayout
+        android:id="@+id/tabSettings"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@drawable/bottom_nav_item_bg">
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            app:tint="@color/colorIconDefault"
+            android:src="@drawable/ic_settings" />
+
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,10 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.SmartCookAI" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+<!--        <item name="fontFamily">@font/nunito</item>-->
+<!--        <item name="android:fontFamily">@font/nunito</item>-->
+    </style>
+
+    <style name="Theme.SmartCookAI" parent="Base.Theme.SmartCookAI" />
+</resources>

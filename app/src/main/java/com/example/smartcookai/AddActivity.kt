@@ -1,4 +1,5 @@
 package com.example.smartcookai
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -18,14 +19,18 @@ class AddActivity : AppCompatActivity() {
         binding = ActivityAddBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Загружаем вкладку по умолчанию
         replaceFragment(ingredientsFragment)
 
-        binding.btnTabIngredients.setOnClickListener {
+        binding.chipIngredients.setOnClickListener {
             replaceFragment(ingredientsFragment)
         }
-        binding.btnTabDescription.setOnClickListener {
+        binding.chipDescription.setOnClickListener {
             replaceFragment(descriptionFragment)
+        }
+
+        binding.bottomBar.tabHome.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
         }
     }
 

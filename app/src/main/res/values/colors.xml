@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+        <!-- B1 - Latte palette -->
+        <color name="colorBackground">#F7F3EE</color>
+        <color name="colorAccentLight">#D9C7A7</color>
+        <color name="colorAccentDark">#BF966C</color>
+        <color name="colorSearchBg">#F4EBDC</color>
+
+        <color name="colorTextPrimary">#1E1E1E</color>
+        <color name="colorTextSecondary">#6E6E6E</color>
+        <color name="colorIconDefault">#3A3A3A</color>
+
+        <color name="white">#FFFFFF</color>
+</resources>
