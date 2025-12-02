@@ -22,11 +22,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".AddActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:exported="false" />
+        <activity
+            android:name=".AddActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".FavouritesActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+        android:name=".SettingsActivity"
+        android:exported="false" />
     </application>
-
 
 </manifest>

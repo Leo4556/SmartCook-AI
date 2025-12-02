@@ -30,6 +30,14 @@ class MainActivity : AppCompatActivity() {
 //            selectTab(it)
             startActivity(intent)
         }
+        binding.bottomBar.tabFav.setOnClickListener {
+            val intent = Intent(this, FavouritesActivity::class.java)
+            startActivity(intent)
+        }
+        binding.bottomBar.tabSettings.setOnClickListener {
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
+        }
     }
 /*
 
