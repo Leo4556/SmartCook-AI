@@ -1,89 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_home"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground">
+    android:background="@color/colorBackground"
+    tools:context=".MainActivity">
 
-    <!-- Заголовок -->
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="32dp"
-        android:text="Welcome!"
-        android:textColor="@color/colorTextPrimary"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- Поисковая строка -->
-
-
+    <!-- 🔍 Поиск -->
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/searchContainer"
+        android:id="@+id/searchLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
+        android:layout_margin="16dp"
+        app:boxCornerRadiusTopStart="16dp"
+        app:boxCornerRadiusTopEnd="16dp"
+        app:boxCornerRadiusBottomStart="16dp"
+        app:boxCornerRadiusBottomEnd="16dp"
+        app:boxStrokeWidth="0dp"
         android:hint="Поиск рецептов"
-        app:boxBackgroundColor="@color/colorIconDefault"
-        app:boxBackgroundMode="filled"
-        app:boxCornerRadiusBottomEnd="20dp"
-        app:boxCornerRadiusBottomStart="20dp"
-        app:boxCornerRadiusTopEnd="20dp"
-        app:boxCornerRadiusTopStart="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:startIconDrawable="@drawable/ic_search"
+        app:startIconTint="@color/colorTextSecondary"
+        app:boxBackgroundColor="@color/white"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvTitle"
-        app:startIconDrawable="@drawable/ic_search">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etSearch"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/colorSearchBg"
-            android:textColor="@color/colorTextPrimary" />
-
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:textSize="16sp"
+            android:textColor="@color/colorTextPrimary"/>
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Список рецептов -->
+
+    <!-- 🧩 Сетка рецептов -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvRecipes"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:paddingHorizontal="12dp"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/searchLayout"
         app:layout_constraintBottom_toTopOf="@id/bottomBar"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchContainer" />
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:listitem="@layout/item_recipe" />
 
-    <!-- Нижнее меню -->
+    <!-- 🟫 Нижнее меню -->
     <include
-        layout="@layout/view_bottom_bar"
         android:id="@+id/bottomBar"
-        android:layout_margin="10dp"
-        android:layout_width="match_parent"
+        layout="@layout/view_bottom_bar"
+        android:layout_width="0dp"
         android:layout_height="72dp"
-        android:layout_alignParentBottom="true"
-        android:elevation="2dp"
-        app:itemRippleColor="@android:color/transparent"
-        app:labelVisibilityMode="labeled"
+        android:layout_margin="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-         />
-
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
