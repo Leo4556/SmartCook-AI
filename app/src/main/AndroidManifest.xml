@@ -12,7 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SmartCookAI"
         tools:targetApi="31">
-
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -31,8 +30,11 @@
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
         <activity
-        android:name=".SettingsActivity"
-        android:exported="false" />
+            android:name=".SettingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".EditRecipeActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

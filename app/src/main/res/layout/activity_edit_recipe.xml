@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_add"
+    android:id="@+id/activity_edit"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBackground"
-    android:fillViewport="true"
     android:fitsSystemWindows="true"
-    tools:context=".AddActivity">
+    tools:context=".EditRecipeActivity">
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,44 +22,16 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <!-- Заголовок -->
-        <com.google.android.material.card.MaterialCardView
+        <!-- Заголовок -->
+        <TextView
+            android:id="@+id/tvTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            app:strokeWidth="0dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="2dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white"
-                android:orientation="vertical"
-                android:padding="10dp">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
-                    app:boxCornerRadiusBottomEnd="12dp"
-                    app:boxCornerRadiusBottomStart="12dp"
-                    app:boxCornerRadiusTopEnd="12dp"
-                    app:boxCornerRadiusTopStart="12dp"
-                    app:boxStrokeWidth="0.5dp"
-                    app:hintTextColor="@color/colorTextPrimary">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etDishName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Название блюда"
-                        android:maxLines="1"
-                        android:inputType="text"
-                        android:textSize="16sp" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+            android:text="Редактировать рецепт"
+            android:textSize="24sp"
+            android:textColor="@color/colorTextPrimary"
+            android:layout_marginBottom="8dp"
+            android:textStyle="bold"/>
 
         <!-- Секция фото -->
         <androidx.cardview.widget.CardView
@@ -111,10 +84,11 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="2dp"
             app:cardCornerRadius="16dp"
             app:strokeWidth="0dp"
             app:cardElevation="2dp">
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -123,6 +97,26 @@
                 android:orientation="vertical"
                 android:padding="10dp">
 
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxStrokeWidth="0.5dp"
+                    app:hintTextColor="@color/colorTextPrimary">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etDishName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Название блюда"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:textSize="16sp" />
+                </com.google.android.material.textfield.TextInputLayout>
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -138,21 +132,22 @@
                         android:id="@+id/edCookingTime"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Время приготовления (мин)"
+                        android:hint="Время приготовления"
                         android:inputType="number"
                         android:maxLines="1"
                         android:textSize="16sp" />
                 </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
+
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- 🔥 Переключатели фрагментов -->
+        <!-- Переключатели фрагментов -->
         <com.google.android.material.chip.ChipGroup
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginBottom="4dp"
+            android:layout_marginBottom="2dp"
             app:selectionRequired="true"
             app:singleSelection="true">
 
@@ -190,7 +185,7 @@
                 android:orientation="vertical">
 
                 <FrameLayout
-                    android:id="@+id/addFragmentContainer"
+                    android:id="@+id/editFragmentContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:minHeight="160dp" />
@@ -230,7 +225,7 @@
 
     </LinearLayout>
 
-    <!-- Нижнее меню -->
+    <!-- Bottom bar -->
     <include
         android:id="@+id/bottomBar"
         layout="@layout/view_bottom_bar"
@@ -238,7 +233,7 @@
         android:layout_height="72dp"
         android:layout_margin="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
