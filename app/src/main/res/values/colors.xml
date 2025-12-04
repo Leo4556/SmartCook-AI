@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-        <!-- B1 - Latte palette -->
-        <color name="colorBackground">#F7F3EE</color>
-        <color name="colorAccentLight">#D9C7A7</color>
-        <color name="colorAccentDark">#BF966C</color>
-        <color name="colorSearchBg">#F4EBDC</color>
+        <!-- Палитра #FEF5ED #D3E4CD #ADC2A9 #99A799 -->
+        <color name="colorBackground">#FEF5ED</color>
+        <color name="colorAccentLight">#D3E4CD</color>
+        <color name="colorAccentDark">#ADC2A9</color>
+        <color name="colorSearchBg">#99A799</color>
 
         <color name="colorTextPrimary">#1E1E1E</color>
         <color name="colorTextSecondary">#6E6E6E</color>
