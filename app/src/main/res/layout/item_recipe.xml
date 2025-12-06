@@ -65,7 +65,7 @@
 
             <!-- Время + сложность -->
             <TextView
-                android:id="@+id/tvRecipeInfo"
+                android:id="@+id/tvRecipeTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="30 мин"

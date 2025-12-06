@@ -2,11 +2,14 @@ package com.example.smartcookai
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.smartcookai.databinding.ActivityFavouritesBinding
+import com.example.smartcookai.viewmodel.RecipeViewModel
 
 class FavouritesActivity : AppCompatActivity() {
-
+    private val recipeViewModel: RecipeViewModel by viewModels()
+    private lateinit var adapter: RecipeAdapter
     private lateinit var binding: ActivityFavouritesBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {

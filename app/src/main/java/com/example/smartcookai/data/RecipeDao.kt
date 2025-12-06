@@ -1,5 +1,6 @@
 package com.example.smartcookai.data
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 
 @Dao
@@ -15,7 +16,7 @@ interface RecipeDao {
     suspend fun delete(recipe: RecipeEntity)
 
     @Query("SELECT * FROM recipes ORDER BY id DESC")
-    suspend fun getAllRecipes(): List<RecipeEntity>
+    fun getAllRecipes(): LiveData<List<RecipeEntity>>
 
     @Query("SELECT * FROM recipes WHERE id = :id LIMIT 1")
     suspend fun getRecipeById(id: Int): RecipeEntity?

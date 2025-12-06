@@ -1,5 +1,7 @@
 package com.example.smartcookai.data
 
+import androidx.lifecycle.LiveData
+
 class RecipeRepository(private val dao: RecipeDao) {
 
     suspend fun addRecipe(recipe: RecipeEntity) {
@@ -14,7 +16,7 @@ class RecipeRepository(private val dao: RecipeDao) {
         dao.delete(recipe)
     }
 
-    suspend fun getAllRecipes(): List<RecipeEntity> {
+    fun getAllRecipes(): LiveData<List<RecipeEntity>> {
         return dao.getAllRecipes()
     }
 

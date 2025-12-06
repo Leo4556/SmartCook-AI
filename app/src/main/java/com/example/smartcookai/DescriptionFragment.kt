@@ -4,10 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.example.smartcookai.databinding.FragmentDescriptionBinding
 
 class DescriptionFragment : Fragment() {
+
+    private val sharedViewModel: AddRecipeSharedViewModel by activityViewModels()
 
     private var _binding: FragmentDescriptionBinding? = null
     private val binding get() = _binding!!
@@ -18,6 +22,14 @@ class DescriptionFragment : Fragment() {
     ): View {
         _binding = FragmentDescriptionBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.etRecipeDescription.addTextChangedListener {
+            sharedViewModel.description = it.toString()
+        }
     }
 
     fun getDescription(): String {
