@@ -9,41 +9,53 @@
     android:background="@color/colorBackground"
     tools:context=".MainActivity">
 
-    <!-- 🔍 Поиск -->
+    <TextView
+        android:id="@+id/tvFavTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Все рецепты"
+        android:textColor="@color/colorTextPrimary"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/searchLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        app:boxCornerRadiusTopStart="16dp"
-        app:boxCornerRadiusTopEnd="16dp"
-        app:boxCornerRadiusBottomStart="16dp"
-        app:boxCornerRadiusBottomEnd="16dp"
-        app:boxStrokeWidth="0dp"
+        android:layout_marginTop="8dp"
         android:hint="Поиск рецептов"
-        app:startIconDrawable="@drawable/ic_search"
-        app:startIconTint="@color/colorTextSecondary"
         app:boxBackgroundColor="@color/white"
-        app:layout_constraintTop_toTopOf="parent"
+        app:boxCornerRadiusBottomEnd="16dp"
+        app:boxCornerRadiusBottomStart="16dp"
+        app:boxCornerRadiusTopEnd="16dp"
+        app:boxCornerRadiusTopStart="16dp"
+        app:boxStrokeWidth="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/tvFavTitle"
+        app:startIconDrawable="@drawable/ic_search"
+        app:startIconTint="@color/colorTextSecondary">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etSearch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:textSize="16sp"
-            android:textColor="@color/colorTextPrimary"/>
+            android:textColor="@color/colorTextPrimary"
+            android:textSize="16sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
 
-    <!-- 🧩 Сетка рецептов -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvRecipes"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:paddingHorizontal="12dp"
+        android:paddingHorizontal="6dp"
         android:clipToPadding="false"
         app:layout_constraintTop_toBottomOf="@id/searchLayout"
         app:layout_constraintBottom_toTopOf="@id/bottomBar"
@@ -51,7 +63,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:listitem="@layout/item_recipe" />
 
-    <!-- 🟫 Нижнее меню -->
     <include
         android:id="@+id/bottomBar"
         layout="@layout/view_bottom_bar"

@@ -11,4 +11,6 @@
         <color name="colorIconDefault">#3A3A3A</color>
 
         <color name="white">#FFFFFF</color>
+        <color name="favorite_active">#ADC2A9</color> <!-- Красный для активного избранного -->
+        <color name="favorite_inactive">#A0A0A0</color> <!-- Серый для неактивного -->
 </resources>

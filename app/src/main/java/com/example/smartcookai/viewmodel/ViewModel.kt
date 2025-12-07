@@ -27,9 +27,18 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
         }
     }
 
+    // Удалить из избранного
     fun removeFromFavorites(recipe: RecipeEntity) {
         viewModelScope.launch {
             val updatedRecipe = recipe.copy(isFavorite = false)
+            repository.updateRecipe(updatedRecipe)
+        }
+    }
+
+    // Добавить/удалить из избранного (переключить)
+    fun toggleFavorite(recipe: RecipeEntity) {
+        viewModelScope.launch {
+            val updatedRecipe = recipe.copy(isFavorite = !recipe.isFavorite)
             repository.updateRecipe(updatedRecipe)
         }
     }
@@ -39,6 +48,7 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
         return repository.getFavoriteRecipes()
     }
 
+    // Получить ВСЕ рецепты
     val allRecipes: LiveData<List<RecipeEntity>>
         get() = repository.getAllRecipes()
 }
