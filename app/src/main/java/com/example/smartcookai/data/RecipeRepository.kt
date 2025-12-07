@@ -1,6 +1,7 @@
 package com.example.smartcookai.data
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.map
 
 class RecipeRepository(private val dao: RecipeDao) {
 
@@ -20,11 +21,9 @@ class RecipeRepository(private val dao: RecipeDao) {
         return dao.getAllRecipes()
     }
 
-    suspend fun getRecipe(id: Int): RecipeEntity? {
-        return dao.getRecipeById(id)
-    }
-
-    suspend fun getFavourites(): List<RecipeEntity> {
-        return dao.getFavourites()
+    fun getFavoriteRecipes(): LiveData<List<RecipeEntity>> {
+        return dao.getAllRecipes().map { recipes ->
+            recipes.filter { it.isFavorite }
+        }
     }
 }

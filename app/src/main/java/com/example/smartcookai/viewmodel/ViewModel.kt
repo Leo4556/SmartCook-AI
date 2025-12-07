@@ -3,7 +3,6 @@ package com.example.smartcookai.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.smartcookai.data.AppDatabase
 import com.example.smartcookai.data.RecipeEntity
 import com.example.smartcookai.data.RecipeRepository
 import kotlinx.coroutines.launch
@@ -28,7 +27,18 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
         }
     }
 
+    fun removeFromFavorites(recipe: RecipeEntity) {
+        viewModelScope.launch {
+            val updatedRecipe = recipe.copy(isFavorite = false)
+            repository.updateRecipe(updatedRecipe)
+        }
+    }
+
+    // Получить только избранные рецепты
+    fun getFavoriteRecipes(): LiveData<List<RecipeEntity>> {
+        return repository.getFavoriteRecipes()
+    }
+
     val allRecipes: LiveData<List<RecipeEntity>>
         get() = repository.getAllRecipes()
-
 }

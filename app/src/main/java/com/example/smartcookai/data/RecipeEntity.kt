@@ -13,5 +13,5 @@ data class RecipeEntity(
     val ingredients: String,
     val description: String,
     val imagePath: String?,     // uri фото блюда
-    val isFavorite: Boolean = false
+    val isFavorite: Boolean = true
 )
