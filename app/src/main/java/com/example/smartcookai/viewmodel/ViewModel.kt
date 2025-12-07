@@ -28,7 +28,7 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
         }
     }
 
-    fun getAllRecipes(): LiveData<List<RecipeEntity>> {
-        return repository.getAllRecipes()
-    }
+    val allRecipes: LiveData<List<RecipeEntity>>
+        get() = repository.getAllRecipes()
+
 }

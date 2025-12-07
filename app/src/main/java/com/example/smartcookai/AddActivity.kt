@@ -14,6 +14,8 @@ import com.example.smartcookai.data.RecipeRepository
 import com.example.smartcookai.databinding.ActivityAddBinding
 import com.example.smartcookai.viewmodel.RecipeViewModel
 import com.example.smartcookai.viewmodel.RecipeViewModelFactory
+import java.io.File
+import java.io.FileOutputStream
 
 class AddActivity : AppCompatActivity() {
 
@@ -34,6 +36,26 @@ class AddActivity : AppCompatActivity() {
             }
         }
 
+    private fun saveImageToInternalStorage(uri: Uri): String? {
+        return try {
+            val inputStream = contentResolver.openInputStream(uri) ?: return null
+            val fileName = "recipe_${System.currentTimeMillis()}.jpg"
+            val file = File(filesDir, fileName)
+
+            val outputStream = FileOutputStream(file)
+            inputStream.copyTo(outputStream)
+
+            inputStream.close()
+            outputStream.close()
+
+            return file.absolutePath
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +64,7 @@ class AddActivity : AppCompatActivity() {
 
         val dao = AppDatabase.getInstance(this).recipeDao()
         val repository = RecipeRepository(dao)
-        val factory = RecipeViewModelFactory(application)
+        val factory = RecipeViewModelFactory(repository)
         viewModel = ViewModelProvider(this, factory).get(RecipeViewModel::class.java)
 
         binding.btnGallery.setOnClickListener {
@@ -90,7 +112,8 @@ class AddActivity : AppCompatActivity() {
         val ingredients = sharedViewModel.ingredients.trim() ?: ""
         val description = sharedViewModel.description.trim() ?: ""
         val cookingTime = binding.edCookingTime.text.toString().toIntOrNull() ?: 0
-        val imageUri = selectedImageUri?.toString()
+        val savedImagePath = selectedImageUri?.let { saveImageToInternalStorage(it) }
+
 
 
         // Проверки
@@ -115,7 +138,7 @@ class AddActivity : AppCompatActivity() {
             ingredients = ingredients,
             description = description,
             cookingTime = cookingTime,
-            imagePath = imageUri
+            imagePath = savedImagePath
         )
 
         // Сохраняем
