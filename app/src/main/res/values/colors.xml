@@ -13,4 +13,5 @@
         <color name="white">#FFFFFF</color>
         <color name="favorite_active">#ADC2A9</color> <!-- Красный для активного избранного -->
         <color name="favorite_inactive">#A0A0A0</color> <!-- Серый для неактивного -->
+        <color name="input_stroke_color">#1E1E1E</color>
 </resources>
