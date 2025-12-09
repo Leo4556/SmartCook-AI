@@ -42,12 +42,23 @@ class FavouritesActivity : AppCompatActivity() {
     private fun setupRecycler() {
         binding.rvFavourites.layoutManager = LinearLayoutManager(this)
 
-        adapter = RecipeAdapter(emptyList()) { recipe ->
-            // Сохраняем рецепт для возможного удаления
-            pendingRecipeToRemove = recipe
+        adapter = RecipeAdapter(
+            emptyList(),
+            onItemClick = { recipe ->
+                val intent = Intent(this, RecipeDetailsActivity::class.java)
+                intent.putExtra("title", recipe.title)
+                intent.putExtra("time", recipe.cookingTime)
+                intent.putExtra("ingredients", recipe.ingredients)
+                intent.putExtra("description", recipe.description)
+                intent.putExtra("imagePath", recipe.imagePath)
+                startActivity(intent)
+            },
+            onFavoriteClick = { recipe ->
+                pendingRecipeToRemove = recipe
+                showRemoveConfirmation(recipe)
+            }
+        )
 
-            showRemoveConfirmation(recipe)
-        }
 
         binding.rvFavourites.adapter = adapter
     }
@@ -83,7 +94,6 @@ class FavouritesActivity : AppCompatActivity() {
         val snackbarView = snackbar.view
         val params = snackbarView.layoutParams as? CoordinatorLayout.LayoutParams
         params?.apply {
-            // Можно добавить дополнительные отступы
             marginStart = 16
             marginEnd = 16
             bottomMargin = 16

@@ -44,8 +44,13 @@ class MainActivity : AppCompatActivity() {
 
         adapter = RecipeAdapter(emptyList(),
             onItemClick = { recipe ->
-                // Открываем детали рецепта (заглушка)
-                openRecipeDetails(recipe)
+                val intent = Intent(this, RecipeDetailsActivity::class.java)
+                intent.putExtra("title", recipe.title)
+                intent.putExtra("time", recipe.cookingTime)
+                intent.putExtra("ingredients", recipe.ingredients)
+                intent.putExtra("description", recipe.description)
+                intent.putExtra("imagePath", recipe.imagePath)
+                startActivity(intent)
             },
             onFavoriteClick = { recipe ->
                 // Переключаем избранное
@@ -105,7 +110,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun openRecipeDetails(recipe: RecipeEntity) {
+   /* private fun openRecipeDetails(recipe: RecipeEntity) {
         // Создаем Intent для открытия деталей рецепта
         com.google.android.material.snackbar.Snackbar.make(
             binding.root,
@@ -118,7 +123,7 @@ class MainActivity : AppCompatActivity() {
         //     putExtra("RECIPE_ID", recipe.id)
         // }
         // startActivity(intent)
-    }
+    }*/
 
     private fun showEmptyState() {
         binding.rvRecipes.visibility = android.view.View.GONE
