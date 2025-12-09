@@ -36,6 +36,10 @@ class DescriptionFragment : Fragment() {
         return binding.etRecipeDescription.text.toString()
     }
 
+    fun clearDescription() {
+        binding.etRecipeDescription.text?.clear()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

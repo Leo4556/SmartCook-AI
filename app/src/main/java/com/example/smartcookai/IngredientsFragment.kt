@@ -9,9 +9,7 @@ import androidx.fragment.app.Fragment
 import com.example.smartcookai.databinding.FragmentIngredientsBinding
 import androidx.fragment.app.activityViewModels
 
-
 class IngredientsFragment : Fragment() {
-
 
     private val sharedViewModel: AddRecipeSharedViewModel by activityViewModels()
 
@@ -34,9 +32,12 @@ class IngredientsFragment : Fragment() {
         }
     }
 
-
     fun getIngredients(): String {
         return binding.etIngredients.text.toString()
+    }
+
+    fun clearIngredients() {
+        binding.etIngredients.text?.clear()
     }
 
     override fun onDestroyView() {

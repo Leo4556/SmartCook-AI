@@ -1,4 +1,5 @@
 package com.example.smartcookai
+
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -55,8 +56,6 @@ class AddActivity : AppCompatActivity() {
         }
     }
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddBinding.inflate(layoutInflater)
@@ -67,12 +66,12 @@ class AddActivity : AppCompatActivity() {
         val factory = RecipeViewModelFactory(repository)
         viewModel = ViewModelProvider(this, factory).get(RecipeViewModel::class.java)
 
-        binding.btnGallery.setOnClickListener {
-            pickImageLauncher.launch("image/*")
-        }
+        setupUI()
+        setupBottomNavigation()
+    }
 
-
-        replaceFragment(ingredientsFragment)
+    private fun setupUI() {
+        // Обработчики для переключения фрагментов
         binding.chipIngredients.setOnClickListener {
             replaceFragment(ingredientsFragment)
         }
@@ -80,23 +79,20 @@ class AddActivity : AppCompatActivity() {
             replaceFragment(descriptionFragment)
         }
 
+        binding.btnGallery.setOnClickListener {
+            pickImageLauncher.launch("image/*")
+        }
 
         binding.btnSave.setOnClickListener {
             saveRecipeToDatabase()
         }
 
-        binding.bottomBar.tabHome.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+        binding.btnCancel.setOnClickListener {
+            clearForm()
+            Toast.makeText(this, "Форма очищена", Toast.LENGTH_SHORT).show()
         }
-        binding.bottomBar.tabFav.setOnClickListener {
-            val intent = Intent(this, FavouritesActivity::class.java)
-            startActivity(intent)
-        }
-        binding.bottomBar.tabSettings.setOnClickListener {
-            val intent = Intent(this, SettingsActivity::class.java)
-            startActivity(intent)
-        }
+
+        replaceFragment(ingredientsFragment)
     }
 
     private fun replaceFragment(fragment: Fragment) {
@@ -105,16 +101,40 @@ class AddActivity : AppCompatActivity() {
             .commit()
     }
 
-    private fun saveRecipeToDatabase() {
+    private fun clearForm() {
+        binding.etDishName.text?.clear()
+        binding.edCookingTime.text?.clear()
 
+        // Очищаем изображение
+        selectedImageUri = null
+        binding.ivDishPhoto.setImageResource(R.drawable.ic_gallery)
+
+        // Очищаем фрагменты
+        clearFragments()
+
+        // Очищаем SharedViewModel
+        sharedViewModel.clearData()
+    }
+
+    private fun clearFragments() {
+        // Очищаем поле ингредиентов
+        if (ingredientsFragment.isAdded) {
+            ingredientsFragment.clearIngredients()
+        }
+
+        // Очищаем поле описания
+        if (descriptionFragment.isAdded) {
+            descriptionFragment.clearDescription()
+        }
+    }
+
+    private fun saveRecipeToDatabase() {
         // Получаем данные
         val title = binding.etDishName.text.toString().trim()
         val ingredients = sharedViewModel.ingredients.trim() ?: ""
         val description = sharedViewModel.description.trim() ?: ""
         val cookingTime = binding.edCookingTime.text.toString().toIntOrNull() ?: 0
         val savedImagePath = selectedImageUri?.let { saveImageToInternalStorage(it) }
-
-
 
         // Проверки
         if (title.isEmpty()) {
@@ -146,7 +166,29 @@ class AddActivity : AppCompatActivity() {
 
         Toast.makeText(this, "Рецепт сохранён!", Toast.LENGTH_SHORT).show()
 
-        finish()
+        // Очистка формы после сохранения
+        clearForm()
     }
 
+    private fun setupBottomNavigation() {
+        binding.bottomBar.tabHome.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+        binding.bottomBar.tabFav.setOnClickListener {
+            val intent = Intent(this, FavouritesActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+        binding.bottomBar.tabAdd.setOnClickListener {
+            // Мы уже на экране добавления, просто очищаем форму
+            clearForm()
+        }
+        binding.bottomBar.tabSettings.setOnClickListener {
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+    }
 }
