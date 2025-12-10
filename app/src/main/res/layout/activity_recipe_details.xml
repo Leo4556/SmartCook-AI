@@ -1,24 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:fillViewport="true"
-    android:fitsSystemWindows="true"
-    android:background="@color/colorBackground"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground">
 
-    <!-- Контейнер скролла -->
     <ScrollView
         android:id="@+id/scrollView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:fillViewport="true"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/bottomBar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:padding="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -30,19 +23,19 @@
                 android:id="@+id/cardImage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp"
-                app:strokeWidth="0dp"
-                android:layout_marginBottom="10dp">
+                app:strokeWidth="0dp">
 
                 <ImageView
                     android:id="@+id/ivRecipeDetailsImage"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_gallery"
+                    android:layout_height="203dp"
+                    android:background="@color/colorAccentLight"
                     android:contentDescription="Фото рецепта"
-                    android:background="@color/colorAccentLight"/>
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_gallery" />
             </com.google.android.material.card.MaterialCardView>
 
             <!-- Название + время -->
@@ -57,8 +50,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:background="@color/white"
+                    android:orientation="vertical"
                     android:padding="16dp">
 
                     <TextView
@@ -66,18 +59,18 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Название блюда"
+                        android:textColor="@color/colorTextPrimary"
                         android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/colorTextPrimary"/>
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tvTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="30 мин"
-                        android:textSize="16sp"
                         android:layout_marginTop="6dp"
-                        android:textColor="@color/colorTextSecondary"/>
+                        android:text="30 мин"
+                        android:textColor="@color/colorTextSecondary"
+                        android:textSize="16sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -86,35 +79,34 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
+                android:backgroundTint="@color/colorAccentLight"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp"
-                android:backgroundTint="@color/colorAccentLight"
-
                 app:strokeWidth="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:background="@color/white"
+                    android:orientation="vertical"
                     android:padding="16dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Ингредиенты"
+                        android:textColor="@color/colorTextPrimary"
                         android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/colorTextPrimary"/>
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tvIngredients"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="— ингредиенты —"
-                        android:textSize="16sp"
                         android:layout_marginTop="8dp"
-                        android:textColor="@color/colorTextSecondary"/>
+                        android:text="— ингредиенты —"
+                        android:textColor="@color/colorTextSecondary"
+                        android:textSize="16sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -123,10 +115,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
+                android:backgroundTint="@color/white"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp"
-                android:backgroundTint="@color/white"
-
                 app:strokeWidth="0dp">
 
                 <LinearLayout
@@ -139,20 +130,21 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Описание"
+                        android:textColor="@color/colorTextPrimary"
                         android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/colorTextPrimary"/>
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tvDescription"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="— описание —"
-                        android:textSize="16sp"
                         android:layout_marginTop="8dp"
-                        android:textColor="@color/colorTextSecondary"/>
+                        android:text="— описание —"
+                        android:textColor="@color/colorTextSecondary"
+                        android:textSize="16sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
+
 
         </LinearLayout>
     </ScrollView>
@@ -162,11 +154,23 @@
     <include
         android:id="@+id/bottomBar"
         layout="@layout/view_bottom_bar"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="72dp"
-        android:layout_margin="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_gravity="bottom"
+        android:layout_margin="10dp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="110dp"
+        android:tint="@color/colorTextPrimary"
+        android:backgroundTint="@color/colorAccentLight"
+        android:contentDescription="Удалить рецепт"
+        android:src="@drawable/ic_delete"
+        app:elevation="8dp"
+        app:layout_anchor="@id/bottomBar"
+        app:layout_anchorGravity="top|end"/>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

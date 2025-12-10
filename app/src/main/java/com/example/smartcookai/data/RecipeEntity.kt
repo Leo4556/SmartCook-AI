@@ -1,8 +1,11 @@
 package com.example.smartcookai.data
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 @Entity(tableName = "recipes")
 data class RecipeEntity(
     @PrimaryKey(autoGenerate = true)
@@ -14,4 +17,4 @@ data class RecipeEntity(
     val description: String,
     val imagePath: String?,     // uri фото блюда
     val isFavorite: Boolean = true,
-)
+) : Parcelable

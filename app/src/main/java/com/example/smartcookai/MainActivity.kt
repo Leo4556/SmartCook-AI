@@ -38,22 +38,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        // GridLayout с 2 колонками
         val layoutManager = GridLayoutManager(this, 2)
         binding.rvRecipes.layoutManager = layoutManager
 
         adapter = RecipeAdapter(emptyList(),
             onItemClick = { recipe ->
                 val intent = Intent(this, RecipeDetailsActivity::class.java)
-                intent.putExtra("title", recipe.title)
-                intent.putExtra("time", recipe.cookingTime)
-                intent.putExtra("ingredients", recipe.ingredients)
-                intent.putExtra("description", recipe.description)
-                intent.putExtra("imagePath", recipe.imagePath)
+                intent.putExtra("recipe", recipe) // Ключевое изменение!
                 startActivity(intent)
             },
             onFavoriteClick = { recipe ->
-                // Переключаем избранное
                 recipeViewModel.toggleFavorite(recipe)
             }
         )

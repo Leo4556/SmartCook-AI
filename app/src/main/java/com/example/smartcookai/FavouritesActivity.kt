@@ -46,11 +46,7 @@ class FavouritesActivity : AppCompatActivity() {
             emptyList(),
             onItemClick = { recipe ->
                 val intent = Intent(this, RecipeDetailsActivity::class.java)
-                intent.putExtra("title", recipe.title)
-                intent.putExtra("time", recipe.cookingTime)
-                intent.putExtra("ingredients", recipe.ingredients)
-                intent.putExtra("description", recipe.description)
-                intent.putExtra("imagePath", recipe.imagePath)
+                intent.putExtra("recipe", recipe)
                 startActivity(intent)
             },
             onFavoriteClick = { recipe ->
@@ -58,7 +54,6 @@ class FavouritesActivity : AppCompatActivity() {
                 showRemoveConfirmation(recipe)
             }
         )
-
 
         binding.rvFavourites.adapter = adapter
     }
