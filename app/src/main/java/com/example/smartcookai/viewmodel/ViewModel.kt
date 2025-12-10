@@ -44,8 +44,8 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
     }
 
     // Получить только избранные рецепты
-    fun getFavoriteRecipes(): LiveData<List<RecipeEntity>> {
-        return repository.getFavoriteRecipes()
+    fun getFavouriteRecipes(): LiveData<List<RecipeEntity>> {
+        return repository.getFavouriteRecipes()
     }
 
     // Получить ВСЕ рецепты

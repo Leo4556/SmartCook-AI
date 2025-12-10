@@ -104,9 +104,9 @@ class FavouritesActivity : AppCompatActivity() {
 
     private fun observeFavorites() {
         // Наблюдаем только за избранными рецептами
-        recipeViewModel.getFavoriteRecipes().observe(this) { favoriteRecipes ->
+        recipeViewModel.getFavouriteRecipes().observe(this) { favouriteRecipes ->
             // Фильтруем, чтобы быть уверенными что показываем только isFavorite = true
-            val favoritesOnly = favoriteRecipes.filter { it.isFavorite }
+            val favoritesOnly = favouriteRecipes.filter { it.isFavorite }
             adapter.updateList(favoritesOnly)
 
             // Можно добавить проверку на пустой список
@@ -139,6 +139,6 @@ class FavouritesActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         // Обновляем список при возвращении на экран
-        recipeViewModel.getFavoriteRecipes()
+        recipeViewModel.getFavouriteRecipes()
     }
 }

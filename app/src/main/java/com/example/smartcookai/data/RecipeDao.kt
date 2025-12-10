@@ -22,5 +22,5 @@ interface RecipeDao {
     suspend fun getRecipeById(id: Int): RecipeEntity?
 
     @Query("SELECT * FROM recipes WHERE isFavorite = 1 ORDER BY id DESC")
-    suspend fun getFavourites(): List<RecipeEntity>
+    fun getFavourites(): LiveData<List<RecipeEntity>>
 }
