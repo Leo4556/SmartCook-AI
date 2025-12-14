@@ -1,6 +1,9 @@
 package com.example.smartcookai
 
+import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
@@ -17,12 +20,13 @@ import com.example.smartcookai.viewmodel.RecipeViewModel
 import com.example.smartcookai.viewmodel.RecipeViewModelFactory
 import java.io.File
 import java.io.FileOutputStream
+import java.io.InputStream
 
 class AddActivity : AppCompatActivity() {
 
     private val sharedViewModel: AddRecipeSharedViewModel by viewModels()
-
     private lateinit var binding: ActivityAddBinding
+    private lateinit var foodClassifier: FoodClassifier
     private val ingredientsFragment = IngredientsFragment()
     private val descriptionFragment = DescriptionFragment()
 
@@ -37,46 +41,38 @@ class AddActivity : AppCompatActivity() {
             }
         }
 
-    private fun saveImageToInternalStorage(uri: Uri): String? {
-        return try {
-            val inputStream = contentResolver.openInputStream(uri) ?: return null
-            val fileName = "recipe_${System.currentTimeMillis()}.jpg"
-            val file = File(filesDir, fileName)
-
-            val outputStream = FileOutputStream(file)
-            inputStream.copyTo(outputStream)
-
-            inputStream.close()
-            outputStream.close()
-
-            return file.absolutePath
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        foodClassifier = FoodClassifier(this)
+
         val dao = AppDatabase.getInstance(this).recipeDao()
         val repository = RecipeRepository(dao)
         val factory = RecipeViewModelFactory(repository)
-        viewModel = ViewModelProvider(this, factory).get(RecipeViewModel::class.java)
+        viewModel = ViewModelProvider(this, factory)[RecipeViewModel::class.java]
 
         setupUI()
         setupBottomNavigation()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        foodClassifier.close()
+    }
+
     private fun setupUI() {
-        // Обработчики для переключения фрагментов
         binding.chipIngredients.setOnClickListener {
             replaceFragment(ingredientsFragment)
         }
+
         binding.chipDescription.setOnClickListener {
             replaceFragment(descriptionFragment)
+        }
+
+        binding.chipAI.setOnClickListener {
+            analyzePhotoWithAI()
         }
 
         binding.btnGallery.setOnClickListener {
@@ -95,6 +91,77 @@ class AddActivity : AppCompatActivity() {
         replaceFragment(ingredientsFragment)
     }
 
+    private fun analyzePhotoWithAI() {
+        val uri = selectedImageUri
+        if (uri == null) {
+            Toast.makeText(this, "❌ Сначала выберите фото", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val bitmap = getBitmapFromUri(this, uri)
+        if (bitmap == null) {
+            Toast.makeText(this, "❌ Ошибка загрузки изображения", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val result = foodClassifier.analyzeFood(bitmap)
+
+        if (result == null) {
+            Toast.makeText(this, "🤷 Не удалось определить блюдо", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        binding.etDishName.setText(result.foodName)
+
+        val ingredientsText = if (result.ingredients.isNotEmpty()) {
+            result.ingredients.joinToString("\n") { "• $it" }
+        } else {
+            "⚠️ Для '${result.foodName}' нет ингредиентов в базе\nДобавьте ингредиенты вручную:"
+        }
+
+        sharedViewModel.ingredients = ingredientsText
+
+        if (ingredientsFragment.isAdded) {
+            ingredientsFragment.updateIngredients(ingredientsText)
+        }
+
+        replaceFragment(ingredientsFragment)
+        binding.chipIngredients.isChecked = true
+
+        val message = if (result.ingredients.isNotEmpty()) {
+            "✅ ${result.foodName}\nИнгредиенты добавлены"
+        } else {
+            "✅ ${result.foodName}\n⚠️ Ингредиенты не найдены"
+        }
+
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    }
+
+    private fun getBitmapFromUri(context: Context, uri: Uri): Bitmap? {
+        return try {
+            val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
+            BitmapFactory.decodeStream(inputStream)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    private fun saveImageToInternalStorage(uri: Uri): String? {
+        return try {
+            val inputStream = contentResolver.openInputStream(uri) ?: return null
+            val fileName = "recipe_${System.currentTimeMillis()}.jpg"
+            val file = File(filesDir, fileName)
+
+            FileOutputStream(file).use { output ->
+                inputStream.copyTo(output)
+            }
+
+            file.absolutePath
+        } catch (e: Exception) {
+            null
+        }
+    }
+
     private fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(binding.addFragmentContainer.id, fragment)
@@ -104,90 +171,50 @@ class AddActivity : AppCompatActivity() {
     private fun clearForm() {
         binding.etDishName.text?.clear()
         binding.edCookingTime.text?.clear()
-
-        // Очищаем изображение
         selectedImageUri = null
         binding.ivDishPhoto.setImageResource(R.drawable.ic_gallery)
-
-        // Очищаем фрагменты
-        clearFragments()
-
-        // Очищаем SharedViewModel
         sharedViewModel.clearData()
     }
 
-    private fun clearFragments() {
-        // Очищаем поле ингредиентов
-        if (ingredientsFragment.isAdded) {
-            ingredientsFragment.clearIngredients()
-        }
-
-        // Очищаем поле описания
-        if (descriptionFragment.isAdded) {
-            descriptionFragment.clearDescription()
-        }
-    }
-
     private fun saveRecipeToDatabase() {
-        // Получаем данные
         val title = binding.etDishName.text.toString().trim()
-        val ingredients = sharedViewModel.ingredients.trim() ?: ""
-        val description = sharedViewModel.description.trim() ?: ""
+        val ingredients = sharedViewModel.ingredients.trim()
+        val description = sharedViewModel.description.trim()
         val cookingTime = binding.edCookingTime.text.toString().toIntOrNull() ?: 0
-        val savedImagePath = selectedImageUri?.let { saveImageToInternalStorage(it) }
+        val imagePath = selectedImageUri?.let { saveImageToInternalStorage(it) }
 
-        // Проверки
-        if (title.isEmpty()) {
-            Toast.makeText(this, "Введите название блюда", Toast.LENGTH_SHORT).show()
+        if (title.isEmpty() || ingredients.isEmpty() || description.isEmpty()) {
+            Toast.makeText(this, "❌ Заполните все поля", Toast.LENGTH_SHORT).show()
             return
         }
 
-        if (ingredients.isEmpty()) {
-            Toast.makeText(this, "Добавьте ингредиенты", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        if (description.isEmpty()) {
-            Toast.makeText(this, "Введите описание рецепта", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        // Создаём объект рецепта
         val recipe = RecipeEntity(
             title = title,
             ingredients = ingredients,
             description = description,
             cookingTime = cookingTime,
-            imagePath = savedImagePath
+            imagePath = imagePath
         )
 
-        // Сохраняем
         viewModel.addRecipe(recipe)
-
-        Toast.makeText(this, "Рецепт сохранён!", Toast.LENGTH_SHORT).show()
-
-        // Очистка формы после сохранения
+        Toast.makeText(this, "✅ Рецепт сохранён!", Toast.LENGTH_SHORT).show()
         clearForm()
     }
 
     private fun setupBottomNavigation() {
         binding.bottomBar.tabHome.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
         binding.bottomBar.tabFav.setOnClickListener {
-            val intent = Intent(this, FavouritesActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, FavouritesActivity::class.java))
             finish()
         }
         binding.bottomBar.tabAdd.setOnClickListener {
-            // Мы уже на экране добавления, просто очищаем форму
             clearForm()
         }
         binding.bottomBar.tabSettings.setOnClickListener {
-            val intent = Intent(this, SettingsActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, SettingsActivity::class.java))
             finish()
         }
     }

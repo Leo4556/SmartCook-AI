@@ -153,6 +153,7 @@
         </com.google.android.material.card.MaterialCardView>
 
         <!-- 🔥 Переключатели фрагментов -->
+        <!-- 🔥 Переключатели фрагментов - обновленная версия -->
         <com.google.android.material.chip.ChipGroup
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -164,7 +165,7 @@
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipIngredients"
                 style="@style/Widget.Material3.Chip.Filter"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:text="Ингредиенты"
@@ -173,14 +174,26 @@
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipDescription"
                 style="@style/Widget.Material3.Chip.Filter"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Описание"
                 app:chipBackgroundColor="@color/chip_background_selector" />
 
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipAI"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Анализ"
+                app:chipIcon="@drawable/ic_ai"
+                app:chipIconSize="28dp"
+                app:chipIconTint="@color/white"
+                app:chipIconVisible="true"
+                app:chipBackgroundColor="@color/colorAccentLight"
+                app:chipStrokeWidth="0.5dp" />
+
         </com.google.android.material.chip.ChipGroup>
 
-        <!-- 🔄 ИСПРАВЛЕННЫЙ SCROLL -->
         <ScrollView
             android:id="@+id/scrollView"
             android:layout_width="match_parent"
