@@ -5,8 +5,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="6dp"
+    android:layout_margin="2dp"
     android:foreground="?android:attr/selectableItemBackground"
+    app:cardBackgroundColor="?attr/colorSurface"
     app:cardCornerRadius="16dp"
     app:cardElevation="3dp"
     app:strokeWidth="0dp"
@@ -15,14 +16,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/white">
+        android:orientation="vertical">
 
         <!-- Фото блюда -->
         <ImageView
             android:id="@+id/ivRecipeImage"
             android:layout_width="match_parent"
-            android:layout_height="130dp"
+            android:minHeight="160dp"
+            android:layout_height="180dp"
             android:scaleType="centerCrop"
             android:contentDescription="Фото блюда"
             android:background="@color/colorAccentLight"
@@ -48,7 +49,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Название блюда"
-                    android:textColor="@color/colorTextPrimary"
+                    android:textColor="?android:attr/textColorPrimary"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:maxLines="2"
@@ -56,25 +57,22 @@
 
                 <ImageView
                     android:id="@+id/btnFav"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:padding="4dp"
-                    android:src="@drawable/ic_bookmark"
-                    app:tint="@color/colorIconDefault" />
+                    android:src="@drawable/ic_bookmark_filled"
+                    app:tint="?attr/colorPrimary" />
             </LinearLayout>
 
             <!-- Время + сложность -->
             <TextView
-                android:id="@+id/tvRecipeInfo"
+                android:id="@+id/tvRecipeTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="30 мин"
-                android:textColor="@color/colorTextSecondary"
+                android:textColor="?android:attr/textColorSecondary"
                 android:textSize="14sp"
                 android:layout_marginTop="4dp" />
-
         </LinearLayout>
-
     </LinearLayout>
-
 </com.google.android.material.card.MaterialCardView>

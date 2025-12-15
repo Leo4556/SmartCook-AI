@@ -6,44 +6,71 @@
     android:id="@+id/activity_home"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground"
+    android:background="?android:attr/colorBackground"
     tools:context=".MainActivity">
 
-    <!-- 🔍 Поиск -->
-    <com.google.android.material.textfield.TextInputLayout
+    <TextView
+        android:id="@+id/tvFavTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Все рецепты"
+        android:textColor="@color/colorTextPrimary"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/searchLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        app:boxCornerRadiusTopStart="16dp"
-        app:boxCornerRadiusTopEnd="16dp"
-        app:boxCornerRadiusBottomStart="16dp"
-        app:boxCornerRadiusBottomEnd="16dp"
-        app:boxStrokeWidth="0dp"
-        android:hint="Поиск рецептов"
-        app:startIconDrawable="@drawable/ic_search"
-        app:startIconTint="@color/colorTextSecondary"
-        app:boxBackgroundColor="@color/white"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="2dp"
+        app:strokeWidth="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/tvFavTitle">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etSearch"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:textSize="16sp"
-            android:textColor="@color/colorTextPrimary"/>
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_marginBottom="6dp"
+            android:hint="Поиск рецептов"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxStrokeWidth="0.5dp"
+            android:padding="10dp"
+            app:hintTextColor="@color/colorTextPrimary"
+            app:boxStrokeColor="@color/input_stroke_color"
+            app:cursorColor="@color/colorTextPrimary"
+            app:startIconDrawable="@drawable/ic_search"
+            app:startIconTint="@color/colorIconDefault">
 
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etSearch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint=""
+                android:maxLines="1"
+                android:textColor="@color/colorTextSecondary"
+                android:textSize="16sp" />
 
-    <!-- 🧩 Сетка рецептов -->
+        </com.google.android.material.textfield.TextInputLayout>
+    </com.google.android.material.card.MaterialCardView>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvRecipes"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:paddingHorizontal="12dp"
+        android:paddingHorizontal="6dp"
         android:clipToPadding="false"
         app:layout_constraintTop_toBottomOf="@id/searchLayout"
         app:layout_constraintBottom_toTopOf="@id/bottomBar"
@@ -51,7 +78,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:listitem="@layout/item_recipe" />
 
-    <!-- 🟫 Нижнее меню -->
     <include
         android:id="@+id/bottomBar"
         layout="@layout/view_bottom_bar"

@@ -4,7 +4,31 @@
         <!-- Customize your light theme here. -->
 <!--        <item name="fontFamily">@font/nunito</item>-->
 <!--        <item name="android:fontFamily">@font/nunito</item>-->
+
     </style>
 
-    <style name="Theme.SmartCookAI" parent="Base.Theme.SmartCookAI" />
+    <style name="Theme.SmartCookAI" parent="Theme.Material3.DayNight.NoActionBar">
+
+        <item name="android:statusBarColor">@color/colorBackground</item>
+        <item name="android:forceDarkAllowed">false</item>
+        <item name="android:windowLightStatusBar">true</item>
+
+
+        <item name="android:colorBackground">@color/colorBackground</item>
+
+        <item name="colorPrimary">@color/colorAccentDark</item>
+        <item name="colorSecondary">@color/colorAccentLight</item>
+
+        <item name="android:textColorPrimary">@color/colorTextPrimary</item>
+        <item name="android:textColorSecondary">@color/colorTextSecondary</item>
+    </style>
+
+
+    <style name="TextInputTheme" parent="Widget.Material3.TextInputLayout.FilledBox">
+        <item name="boxStrokeColor">@color/colorTextPrimary</item>
+        <item name="cursorColor">@color/colorTextPrimary</item>
+        <item name="hintTextColor">@color/colorTextSecondary</item>
+
+    </style>
+
 </resources>
