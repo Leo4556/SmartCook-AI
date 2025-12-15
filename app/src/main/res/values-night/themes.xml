@@ -1,7 +1,30 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.SmartCookAI" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
-    </style>
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Тёмные, но не чёрные фоны -->
+    <color name="colorBackground">#2E2B2B</color> <!-- Почти чёрный -->
+    <color name="colorCardBackground">#2A2A2A</color> <!-- Тёмно-серый -->
+    <color name="colorSearchBg">#363636</color> <!-- Средний серый -->
+
+    <!-- Градиент зелёных акцентов -->
+    <color name="colorAccentLight">#3B6B3B</color> <!-- Тёмно-зелёный -->
+    <color name="colorAccentDark">#5A9C5A</color> <!-- Ярко-зелёный -->
+
+    <!-- Высококонтрастный текст -->
+    <color name="colorTextPrimary">#F8F8F8</color> <!-- Очень светлый серый -->
+    <color name="colorTextSecondary">#C0C0C0</color> <!-- Серый -->
+
+    <!-- Иконки -->
+    <color name="colorIconDefault">#66BB6A</color> <!-- Material Green 400 -->
+
+    <!-- Акцентные элементы -->
+    <color name="input_stroke_color">#66BB6A</color>
+
+    <!-- Избранное -->
+    <color name="favorite_active">#FFCA28</color> <!-- Жёлтый -->
+    <color name="favorite_inactive">#90A4AE</color> <!-- Blue Grey 300 -->
+
+    <color name="chip_background_selector">#455A64</color>
+
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
 </resources>

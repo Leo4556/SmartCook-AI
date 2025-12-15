@@ -16,6 +16,7 @@ import com.example.smartcookai.data.AppDatabase
 import com.example.smartcookai.data.RecipeEntity
 import com.example.smartcookai.data.RecipeRepository
 import com.example.smartcookai.databinding.ActivityAddBinding
+import com.example.smartcookai.utils.ThemeUtils
 import com.example.smartcookai.viewmodel.RecipeViewModel
 import com.example.smartcookai.viewmodel.RecipeViewModelFactory
 import java.io.File
@@ -43,6 +44,8 @@ class AddActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ThemeUtils.applySavedTheme(this)
+
         binding = ActivityAddBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

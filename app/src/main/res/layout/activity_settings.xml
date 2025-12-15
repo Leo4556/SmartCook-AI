@@ -55,7 +55,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:background="@color/white"
                     android:padding="16dp">
 
                     <TextView
@@ -84,7 +83,9 @@
                         <com.google.android.material.switchmaterial.SwitchMaterial
                             android:id="@+id/switchNotifications"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                            android:layout_height="wrap_content"
+                            app:trackTint="@color/colorAccentDark"
+                            app:thumbTint="@color/colorAccentLight" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -103,7 +104,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:background="@color/white"
                     android:padding="16dp">
 
                     <TextView
@@ -132,12 +132,13 @@
                         <com.google.android.material.switchmaterial.SwitchMaterial
                             android:id="@+id/switchTheme"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                            android:layout_height="wrap_content"
+                            app:trackTint="@color/colorAccentDark"
+                            app:thumbTint="@color/colorAccentLight" />
                     </LinearLayout>
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
-
 
             <!-- 🔹 Блок 3 — О приложении -->
             <com.google.android.material.card.MaterialCardView
@@ -152,7 +153,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:background="@color/white"
                     android:padding="16dp">
 
                     <TextView
@@ -171,6 +171,15 @@
                         android:text="Версия: 1.0"
                         android:textSize="16sp"
                         android:textColor="@color/colorTextSecondary"/>
+
+                    <!-- Дополнительная информация о приложении -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SmartCook AI - ваше приложение для умной кухни"
+                        android:textSize="14sp"
+                        android:textColor="@color/colorTextSecondary"
+                        android:layout_marginTop="8dp"/>
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

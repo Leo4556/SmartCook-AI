@@ -104,21 +104,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-   /* private fun openRecipeDetails(recipe: RecipeEntity) {
-        // Создаем Intent для открытия деталей рецепта
-        com.google.android.material.snackbar.Snackbar.make(
-            binding.root,
-            "Открыть детали: ${recipe.title}",
-            com.google.android.material.snackbar.Snackbar.LENGTH_SHORT
-        ).show()
-
-        // RecipeDetailActivity(позже):
-        // val intent = Intent(this, RecipeDetailActivity::class.java).apply {
-        //     putExtra("RECIPE_ID", recipe.id)
-        // }
-        // startActivity(intent)
-    }*/
-
     private fun showEmptyState() {
         binding.rvRecipes.visibility = android.view.View.GONE
     }
@@ -151,7 +136,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
-
     // Класс для отступов между карточками
     inner class GridSpacingItemDecoration(
         private val spanCount: Int,

@@ -6,7 +6,7 @@
     android:id="@+id/activity_home"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground"
+    android:background="?android:attr/colorBackground"
     tools:context=".MainActivity">
 
     <TextView
@@ -36,48 +36,35 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvFavTitle">
 
-        <LinearLayout
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white"
-            android:orientation="vertical"
-            app:cardCornerRadius="16dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:hint="Поиск рецептов"
             app:boxCornerRadiusBottomEnd="12dp"
             app:boxCornerRadiusBottomStart="12dp"
             app:boxCornerRadiusTopEnd="12dp"
             app:boxCornerRadiusTopStart="12dp"
-            android:padding="10dp">
+            app:boxStrokeWidth="0.5dp"
+            android:padding="10dp"
+            app:hintTextColor="@color/colorTextPrimary"
+            app:boxStrokeColor="@color/input_stroke_color"
+            app:cursorColor="@color/colorTextPrimary"
+            app:startIconDrawable="@drawable/ic_search"
+            app:startIconTint="@color/colorIconDefault">
 
-            <com.google.android.material.textfield.TextInputLayout
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etSearch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="6dp"
-                android:hint="Поиск рецептов"
-                app:boxCornerRadiusBottomEnd="12dp"
-                app:boxCornerRadiusBottomStart="12dp"
-                app:boxCornerRadiusTopEnd="12dp"
-                app:boxCornerRadiusTopStart="12dp"
-                app:boxStrokeWidth="0.5dp"
-                app:hintTextColor="@color/colorTextPrimary"
-                app:boxStrokeColor="@color/input_stroke_color"
-                app:cursorColor="@color/colorTextPrimary"
-                app:startIconDrawable="@drawable/ic_search"
-                app:startIconTint="@color/colorTextSecondary">
+                android:hint=""
+                android:maxLines="1"
+                android:textColor="@color/colorTextSecondary"
+                android:textSize="16sp" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etSearch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint=""
-                    android:maxLines="1"
-                    android:textColor="@color/colorTextPrimary"
-                    android:textSize="16sp" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-        </LinearLayout>
+        </com.google.android.material.textfield.TextInputLayout>
     </com.google.android.material.card.MaterialCardView>
-
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvRecipes"

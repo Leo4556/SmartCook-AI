@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
-xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground">
+    android:background="?android:attr/colorBackground">
 
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        android:padding="16dp">
+        android:layout_marginBottom="80dp"
+        android:padding="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -24,6 +25,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
+                app:cardBackgroundColor="?attr/colorSurface"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp"
                 app:strokeWidth="0dp">
@@ -43,6 +45,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
+                app:cardBackgroundColor="?attr/colorSurface"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp"
                 app:strokeWidth="0dp">
@@ -50,7 +53,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
                     android:orientation="vertical"
                     android:padding="16dp">
 
@@ -59,7 +61,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Название блюда"
-                        android:textColor="@color/colorTextPrimary"
+                        android:textColor="?android:attr/textColorPrimary"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
@@ -69,7 +71,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
                         android:text="30 мин"
-                        android:textColor="@color/colorTextSecondary"
+                        android:textColor="?android:attr/textColorSecondary"
                         android:textSize="16sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -79,7 +81,8 @@ xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/colorAccentLight"
+                android:backgroundTint="?attr/colorSurface"
+                app:cardBackgroundColor="?attr/colorSurface"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp"
                 app:strokeWidth="0dp">
@@ -87,7 +90,6 @@ xmlns:android="http://schemas.android.com/apk/res/android"
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
                     android:orientation="vertical"
                     android:padding="16dp">
 
@@ -95,7 +97,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Ингредиенты"
-                        android:textColor="@color/colorTextPrimary"
+                        android:textColor="?android:attr/textColorPrimary"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -105,7 +107,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="— ингредиенты —"
-                        android:textColor="@color/colorTextSecondary"
+                        android:textColor="?android:attr/textColorSecondary"
                         android:textSize="16sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -115,7 +117,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:backgroundTint="@color/white"
+                app:cardBackgroundColor="?attr/colorSurface"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp"
                 app:strokeWidth="0dp">
@@ -130,7 +132,7 @@ xmlns:android="http://schemas.android.com/apk/res/android"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Описание"
-                        android:textColor="@color/colorTextPrimary"
+                        android:textColor="?android:attr/textColorPrimary"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -140,16 +142,12 @@ xmlns:android="http://schemas.android.com/apk/res/android"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="— описание —"
-                        android:textColor="@color/colorTextSecondary"
+                        android:textColor="?android:attr/textColorSecondary"
                         android:textSize="16sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
-
-
         </LinearLayout>
     </ScrollView>
-
-
 
     <include
         android:id="@+id/bottomBar"
@@ -166,10 +164,10 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="28dp"
         android:layout_marginBottom="110dp"
-        android:tint="@color/colorTextPrimary"
         android:backgroundTint="@color/colorAccentLight"
         android:contentDescription="Удалить рецепт"
         android:src="@drawable/ic_delete"
+        android:tint="@android:color/white"
         app:elevation="8dp"
         app:layout_anchor="@id/bottomBar"
         app:layout_anchorGravity="top|end"/>
