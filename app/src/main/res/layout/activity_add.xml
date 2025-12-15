@@ -251,7 +251,7 @@
                 android:layout_weight="1"
                 android:backgroundTint="@color/colorAccentDark"
                 android:text="Сохранить"
-                android:textColor="@color/white" />
+                android:textColor="@color/colorTextPrimary" />
         </LinearLayout>
 
     </LinearLayout>

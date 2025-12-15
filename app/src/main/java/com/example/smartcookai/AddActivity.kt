@@ -44,7 +44,6 @@ class AddActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ThemeUtils.applySavedTheme(this)
 
         binding = ActivityAddBinding.inflate(layoutInflater)
         setContentView(binding.root)
