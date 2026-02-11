@@ -27,7 +27,7 @@
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:src="@drawable/ic_home"
-            app:tint="@color/colorIconDefault" />
+            app:tint="@color/colorIconBottomBarDefault" />
     </LinearLayout>
 
     <!-- ADD -->
@@ -43,7 +43,7 @@
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
-            app:tint="@color/colorIconDefault"
+            app:tint="@color/colorIconBottomBarDefault"
             android:src="@drawable/ic_add" />
     </LinearLayout>
 
@@ -60,7 +60,7 @@
         <ImageView
             android:layout_width="36dp"
             android:layout_height="36dp"
-            app:tint="@color/colorIconDefault"
+            app:tint="@color/colorIconBottomBarDefault"
             android:src="@drawable/ic_bookmark" />
     </LinearLayout>
 
@@ -77,7 +77,7 @@
         <ImageView
             android:layout_width="36dp"
             android:layout_height="36dp"
-            app:tint="@color/colorIconDefault"
+            app:tint="@color/colorIconBottomBarDefault"
             android:src="@drawable/ic_settings" />
     </LinearLayout>
 

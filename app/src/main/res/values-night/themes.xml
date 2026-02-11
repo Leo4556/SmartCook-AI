@@ -15,6 +15,7 @@
 
     <!-- Иконки -->
     <color name="colorIconDefault">#66BB6A</color> <!-- Material Green 400 -->
+    <color name="colorIconBottomBarDefault">#232121</color> <!-- Material Green 400 -->
 
     <!-- Акцентные элементы -->
     <color name="input_stroke_color">#66BB6A</color>
