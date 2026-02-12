@@ -21,7 +21,18 @@
         android:paddingTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
-
+    <TextView
+        android:id="@+id/tvEmptyAll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Нет избранных рецептов"
+        android:textColor="@color/colorTextSecondary"
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/searchLayout"
         android:layout_width="0dp"

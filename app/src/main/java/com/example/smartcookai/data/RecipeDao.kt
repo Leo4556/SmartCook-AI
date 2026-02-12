@@ -23,4 +23,7 @@ interface RecipeDao {
 
     @Query("SELECT * FROM recipes WHERE isFavorite = 1 ORDER BY id DESC")
     fun getFavourites(): LiveData<List<RecipeEntity>>
+
+    @Query("SELECT * FROM recipes WHERE isFavorite = 1 AND title LIKE '%' || :query || '%' ORDER BY id DESC")
+    fun searchFavourites(query: String): LiveData<List<RecipeEntity>>
 }

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.smartcookai.data.RecipeEntity
 import com.example.smartcookai.data.RecipeRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
@@ -16,7 +17,7 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
     }
 
     fun updateRecipe(recipe: RecipeEntity) {
-        viewModelScope.launch {
+        viewModelScope.launch (Dispatchers.IO){
             repository.updateRecipe(recipe)
         }
     }
@@ -46,6 +47,11 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
     // Получить только избранные рецепты
     fun getFavouriteRecipes(): LiveData<List<RecipeEntity>> {
         return repository.getFavouriteRecipes()
+    }
+
+    // Добавьте этот метод в RecipeViewModel
+    fun searchFavouriteRecipes(query: String): LiveData<List<RecipeEntity>> {
+        return repository.searchFavouriteRecipes(query)
     }
 
     // Получить ВСЕ рецепты

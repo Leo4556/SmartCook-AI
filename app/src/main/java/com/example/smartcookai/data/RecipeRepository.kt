@@ -24,4 +24,8 @@ class RecipeRepository(private val dao: RecipeDao) {
     fun getFavouriteRecipes(): LiveData<List<RecipeEntity>> {
         return dao.getFavourites()
     }
+
+    fun searchFavouriteRecipes(query: String): LiveData<List<RecipeEntity>> {
+        return dao.searchFavourites(query)
+    }
 }

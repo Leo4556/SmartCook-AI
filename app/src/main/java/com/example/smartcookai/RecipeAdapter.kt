@@ -17,7 +17,7 @@ class RecipeAdapter(
 
     // Переменная для предотвращения двойных кликов
     private var lastClickTime: Long = 0
-    private val CLICK_DELAY = 500L // 0.5 секунды между кликами
+    private val CLICK_DELAY = 200L // 0.5 секунды между кликами
 
     inner class RecipeViewHolder(val binding: ItemRecipeBinding) :
         RecyclerView.ViewHolder(binding.root) {
