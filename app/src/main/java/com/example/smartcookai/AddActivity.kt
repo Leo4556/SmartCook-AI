@@ -12,13 +12,16 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.example.smartcookai.data.AppDatabase
 import com.example.smartcookai.data.RecipeEntity
 import com.example.smartcookai.data.RecipeRepository
 import com.example.smartcookai.databinding.ActivityAddBinding
+import com.example.smartcookai.utils.NutritionData
 import com.example.smartcookai.utils.ThemeUtils
 import com.example.smartcookai.viewmodel.RecipeViewModel
 import com.example.smartcookai.viewmodel.RecipeViewModelFactory
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -190,18 +193,72 @@ class AddActivity : AppCompatActivity() {
             return
         }
 
-        val recipe = RecipeEntity(
-            title = title,
-            ingredients = ingredients,
-            description = description,
-            cookingTime = cookingTime,
-            imagePath = imagePath
-        )
+        lifecycleScope.launch {
 
-        viewModel.addRecipe(recipe)
-        Toast.makeText(this, "✅ Рецепт сохранён!", Toast.LENGTH_SHORT).show()
-        clearForm()
+            val (kcal, protein, fat, carbs) =
+                calculateNutritionFromText(ingredients)
+
+            val recipe = RecipeEntity(
+                title = title,
+                ingredients = ingredients,
+                description = description,
+                cookingTime = cookingTime,
+                imagePath = imagePath,
+
+                totalKcal = kcal,
+                totalProtein = protein,
+                totalFat = fat,
+                totalCarbs = carbs
+            )
+
+            viewModel.addRecipe(recipe)
+
+            runOnUiThread {
+                Toast.makeText(
+                    this@AddActivity,
+                    "✅ Рецепт сохранён!",
+                    Toast.LENGTH_SHORT
+                ).show()
+                clearForm()
+            }
+        }
     }
+
+
+    private fun calculateNutritionFromText(ingredientsText: String):
+            Quadruple<Double, Double, Double, Double> {
+
+        var totalKcal = 0.0
+        var totalProtein = 0.0
+        var totalFat = 0.0
+        var totalCarbs = 0.0
+
+        val lines = ingredientsText.split("\n")
+
+        for (line in lines) {
+
+            val cleanLine = line.replace("•", "").trim()
+            val parts = cleanLine.split(" ")
+
+            if (parts.size < 2) continue
+
+            val weight = parts.last().toDoubleOrNull() ?: continue
+            val name = parts.dropLast(1).joinToString(" ")
+
+            val nutrition = NutritionData.ingredients[name]
+
+            if (nutrition != null) {
+
+                totalKcal += nutrition.kcal * weight / 100
+                totalProtein += nutrition.protein * weight / 100
+                totalFat += nutrition.fat * weight / 100
+                totalCarbs += nutrition.carbs * weight / 100
+            }
+        }
+
+        return Quadruple(totalKcal, totalProtein, totalFat, totalCarbs)
+    }
+
 
     private fun setupBottomNavigation() {
         binding.bottomBar.tabHome.setOnClickListener {

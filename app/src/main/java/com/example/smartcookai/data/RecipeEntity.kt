@@ -17,4 +17,9 @@ data class RecipeEntity(
     val description: String,
     val imagePath: String?,     // uri фото блюда
     val isFavorite: Boolean = true,
+
+    val totalKcal: Double = 0.0,
+    val totalProtein: Double = 0.0,
+    val totalFat: Double = 0.0,
+    val totalCarbs: Double = 0.0
 ) : Parcelable

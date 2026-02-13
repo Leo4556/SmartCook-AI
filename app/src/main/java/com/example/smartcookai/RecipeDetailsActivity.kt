@@ -43,6 +43,11 @@ class RecipeDetailsActivity : AppCompatActivity() {
             binding.tvTime.text = "${recipe.cookingTime} мин"
             binding.tvIngredients.text = recipe.ingredients
             binding.tvDescription.text = recipe.description
+            binding.tvCalories.text = "${recipe.totalKcal.toInt()} ккал"
+            binding.tvProtein.text = "Белки: ${recipe.totalProtein.toInt()} г"
+            binding.tvFat.text = "Жиры: ${recipe.totalFat.toInt()} г"
+            binding.tvCarbs.text = "Углеводы: ${recipe.totalCarbs.toInt()} г"
+
 
             if (!recipe.imagePath.isNullOrEmpty()) {
                 val bitmap = BitmapFactory.decodeFile(recipe.imagePath)
