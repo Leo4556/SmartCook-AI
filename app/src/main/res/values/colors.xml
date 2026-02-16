@@ -17,4 +17,8 @@
         <color name="favorite_active">#ADC2A9</color>
         <color name="favorite_inactive">#A0A0A0</color>
         <color name="input_stroke_color">#1E1E1E</color>
+
+        <color name="snackbar_background">#ADC2A9</color>
+        <color name="snackbar_text">#1E1E1E</color>
+
 </resources>

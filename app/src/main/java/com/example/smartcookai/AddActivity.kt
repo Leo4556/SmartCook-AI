@@ -225,8 +225,9 @@ class AddActivity : AppCompatActivity() {
     }
 
 
-    private fun calculateNutritionFromText(ingredientsText: String):
-            Quadruple<Double, Double, Double, Double> {
+    private fun calculateNutritionFromText(
+        ingredientsText: String
+    ): Quadruple<Double, Double, Double, Double> {
 
         var totalKcal = 0.0
         var totalProtein = 0.0
@@ -236,14 +237,33 @@ class AddActivity : AppCompatActivity() {
         val lines = ingredientsText.split("\n")
 
         for (line in lines) {
+            var cleanLine = line
+                .replace("•", "")
+                .replace(",", "")
+                .trim()
 
-            val cleanLine = line.replace("•", "").trim()
+            cleanLine = cleanLine
+                .replace("-", " ")
+                .replace("—", " ")
+                .replace(":", " ")
+                .replace("=", " ")
+
+            cleanLine = cleanLine
+                .replace("грамм", "")
+                .replace("грамма", "")
+                .replace("граммов", "")
+                .replace("гр", "")
+                .replace("г", "")
+                .trim()
+
+            cleanLine = cleanLine.replace(Regex("\\s+"), " ")
+
             val parts = cleanLine.split(" ")
 
             if (parts.size < 2) continue
 
             val weight = parts.last().toDoubleOrNull() ?: continue
-            val name = parts.dropLast(1).joinToString(" ")
+            val name = parts.dropLast(1).joinToString(" ").lowercase()
 
             val nutrition = NutritionData.ingredients[name]
 
@@ -258,6 +278,7 @@ class AddActivity : AppCompatActivity() {
 
         return Quadruple(totalKcal, totalProtein, totalFat, totalCarbs)
     }
+
 
 
     private fun setupBottomNavigation() {

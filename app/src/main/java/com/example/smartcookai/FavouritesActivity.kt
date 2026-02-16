@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
@@ -132,18 +133,14 @@ class FavouritesActivity : AppCompatActivity() {
 
             // Настраиваем цвета
             undoConfirmationSnackbar.setActionTextColor(
-                ContextCompat.getColor(this, R.color.colorAccentDark)
+                ContextCompat.getColor(this, R.color.snackbar_background)
             )
 
-            val snackbarView = undoConfirmationSnackbar.view
-            snackbarView.setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccentDark))
-
-            val textView = snackbarView.findViewById<android.widget.TextView>(
+            val textView = undoConfirmationSnackbar.view.findViewById<TextView>(
                 com.google.android.material.R.id.snackbar_text
             )
-            textView.setTextColor(ContextCompat.getColor(this, R.color.colorTextPrimary))
 
-            val params = snackbarView.layoutParams as? CoordinatorLayout.LayoutParams
+            val params = textView.layoutParams as? CoordinatorLayout.LayoutParams
             params?.apply {
                 marginStart = 16
                 marginEnd = 16
@@ -214,7 +211,8 @@ class FavouritesActivity : AppCompatActivity() {
         if (recipes.isEmpty()) {
             binding.tvEmptyFavorites.visibility = android.view.View.VISIBLE
             if (currentSearchQuery.isNotEmpty()) {
-                binding.tvEmptyFavorites.text = "По запросу \"$currentSearchQuery\" ничего не найдено"
+                binding.tvEmptyFavorites.text =
+                    "По запросу \"$currentSearchQuery\" ничего не найдено"
             } else {
                 binding.tvEmptyFavorites.text = "Нет избранных рецептов"
             }

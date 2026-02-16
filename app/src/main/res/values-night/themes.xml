@@ -6,8 +6,8 @@
     <color name="colorSearchBg">#363636</color> <!-- Средний серый -->
 
     <!-- Градиент зелёных акцентов -->
-    <color name="colorAccentLight">#3B6B3B</color> <!-- Тёмно-зелёный -->
-    <color name="colorAccentDark">#5A9C5A</color> <!-- Ярко-зелёный -->
+    <color name="colorAccentDark">#3B6B3B</color> <!-- Тёмно-зелёный -->
+    <color name="colorAccentLight">#5A9C5A</color> <!-- Ярко-зелёный -->
 
     <!-- Высококонтрастный текст -->
     <color name="colorTextPrimary">#F8F8F8</color> <!-- Очень светлый серый -->
@@ -25,6 +25,10 @@
     <color name="favorite_inactive">#90A4AE</color> <!-- Blue Grey 300 -->
 
     <color name="chip_background_selector">#455A64</color>
+
+    <!-- Snackbar -->
+    <color name="snackbar_background">#3B6B3B</color>   <!-- тёмно-зелёный -->
+    <color name="snackbar_text">#F8F8F8</color>         <!-- светлый текст -->
 
     <color name="white">#FFFFFFFF</color>
     <color name="black">#FF000000</color>
