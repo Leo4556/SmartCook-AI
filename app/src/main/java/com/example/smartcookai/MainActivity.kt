@@ -45,6 +45,9 @@ class MainActivity : AppCompatActivity() {
         setupBottomNavigation()
 
         binding.bottomBar.tabHome.isSelected = true
+        binding.btnScan.setOnClickListener{
+            startActivity(Intent(this, ScanActivity::class.java))
+        }
     }
 
     private fun setupRecyclerView() {
