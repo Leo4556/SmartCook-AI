@@ -29,13 +29,6 @@
             android:textStyle="bold"/>
 
         <TextView
-            android:id="@+id/tvSafetyScore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Общая безопасность: 7/10"
-            android:layout_marginTop="8dp"/>
-
-        <TextView
             android:id="@+id/tvAdditives"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

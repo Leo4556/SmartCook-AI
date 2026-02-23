@@ -23,6 +23,7 @@ import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import android.util.Size
 import androidx.camera.core.*
+import com.example.smartcookai.utils.EAdditiveRepository
 
 
 class ScanActivity : AppCompatActivity() {
@@ -32,6 +33,9 @@ class ScanActivity : AppCompatActivity() {
     private var latestDetectedText: String = ""
     private val eNumberRegex = Regex("""\b[Ee][\s-]?\d{3}\b""")
 
+    private val textBuffer = ArrayDeque<String>()
+    private val BUFFER_SIZE = 5
+
     private var imageWidth = 0
     private var imageHeight = 0
 
@@ -39,6 +43,8 @@ class ScanActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityScanBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        EAdditiveRepository.load(this)
 
         if (ContextCompat.checkSelfPermission(
                 this,
@@ -57,19 +63,46 @@ class ScanActivity : AppCompatActivity() {
         binding.btnAnalyze.setOnClickListener {
 
             val matches = eNumberRegex.findAll(latestDetectedText)
-            val found = matches.map { it.value }.toList()
 
-            if (found.isNotEmpty()) {
+            val found = matches
+                .map { it.value.uppercase().replace(" ", "").replace("-", "") }
+                .toSet()
 
-                val resultText = found.joinToString("\n")
-
-                val sheet = ResultBottomSheetFragment(resultText) {}
-                sheet.show(supportFragmentManager, "result")
-
-            } else {
-                val sheet = ResultBottomSheetFragment("E-добавки не найдены") {}
-                sheet.show(supportFragmentManager, "result")
+            if (found.isEmpty()) {
+                ResultBottomSheetFragment("E-добавки не найдены") {}
+                    .show(supportFragmentManager, "result")
+                return@setOnClickListener
             }
+
+            val resultBuilder = StringBuilder()
+            var totalRisk = 0
+            var counted = 0
+
+            for (code in found) {
+
+                val additive = EAdditiveRepository.getAdditive(code)
+
+                if (additive != null) {
+
+                    resultBuilder.append("${additive.code} — ${additive.name}\n")
+                    resultBuilder.append("${additive.safetyLabel}\n")
+                    resultBuilder.append("${additive.description}\n\n")
+
+                    totalRisk += additive.safetyLevel
+                    counted++
+
+                } else {
+                    resultBuilder.append("$code — Нет данных\n\n")
+                }
+            }
+
+            if (counted > 0) {
+                val averageRisk = totalRisk / counted
+                resultBuilder.append("Общая оценка риска: $averageRisk / 3")
+            }
+
+            ResultBottomSheetFragment(resultBuilder.toString()) {}
+                .show(supportFragmentManager, "result")
         }
 
     }
@@ -91,7 +124,7 @@ class ScanActivity : AppCompatActivity() {
 
             // ImageAnalysis с повышенным разрешением
             val imageAnalyzer = ImageAnalysis.Builder()
-                .setTargetResolution(Size(1280, 720)) // лучше для OCR
+                .setTargetResolution(Size(1920, 1080)) // лучше для OCR
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
 
@@ -166,7 +199,18 @@ class ScanActivity : AppCompatActivity() {
                         }
                     }
 
-                    latestDetectedText = filteredText.toString()
+                    val currentText = filteredText.toString()
+
+                    if (currentText.isNotBlank()) {
+
+                        if (textBuffer.size >= BUFFER_SIZE) {
+                            textBuffer.removeFirst()
+                        }
+
+                        textBuffer.addLast(currentText)
+
+                        latestDetectedText = getStableText()
+                    }
                 }
                 .addOnCompleteListener {
                     imageProxy.close()
@@ -174,6 +218,17 @@ class ScanActivity : AppCompatActivity() {
         } else {
             imageProxy.close()
         }
+    }
+
+    private fun getStableText(): String {
+
+        if (textBuffer.isEmpty()) return ""
+
+        return textBuffer
+            .groupingBy { it }
+            .eachCount()
+            .maxByOrNull { it.value }
+            ?.key ?: ""
     }
 
     private fun getFrameRectInImage(): android.graphics.Rect {
