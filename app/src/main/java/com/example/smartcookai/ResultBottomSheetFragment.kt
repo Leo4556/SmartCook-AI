@@ -8,7 +8,7 @@ import android.widget.TextView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class ResultBottomSheetFragment(
-    private val resultText: String,
+    private val resultText: CharSequence,
     private val onDismissCallback: () -> Unit
 ) : BottomSheetDialogFragment() {
 

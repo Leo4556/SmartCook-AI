@@ -31,7 +31,7 @@ class ScanActivity : AppCompatActivity() {
     private lateinit var binding: ActivityScanBinding
 
     private var latestDetectedText: String = ""
-    private val eNumberRegex = Regex("""\b[Ee][\s-]?\d{3}\b""")
+    private val eNumberRegex = Regex("""\b[Ee][\s-]?\d{4}\b""")
 
     private val textBuffer = ArrayDeque<String>()
     private val BUFFER_SIZE = 5
@@ -65,7 +65,14 @@ class ScanActivity : AppCompatActivity() {
             val matches = eNumberRegex.findAll(latestDetectedText)
 
             val found = matches
-                .map { it.value.uppercase().replace(" ", "").replace("-", "") }
+                .map { it.value.uppercase()
+                    .replace(" ", "")
+                    .replace("-", "")
+                    .replace("I", "1")
+                    .replace("L", "1")
+                    .replace("O", "0")
+                    .replace("S", "5")
+                    .replace("-", "")}
                 .toSet()
 
             if (found.isEmpty()) {
@@ -74,7 +81,7 @@ class ScanActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val resultBuilder = StringBuilder()
+            val resultBuilder = android.text.SpannableStringBuilder()
             var totalRisk = 0
             var counted = 0
 
@@ -84,15 +91,45 @@ class ScanActivity : AppCompatActivity() {
 
                 if (additive != null) {
 
-                    resultBuilder.append("${additive.code} — ${additive.name}\n")
-                    resultBuilder.append("${additive.safetyLabel}\n")
-                    resultBuilder.append("${additive.description}\n\n")
+                    // Заголовок
+                    appendColored(
+                        resultBuilder,
+                        "${additive.code} — ${additive.name}\n",
+                        getThemeTextColor()
+                    )
+
+                    // Цвет по уровню риска
+                    val riskColor = when (additive.safetyLevel) {
+                        1 -> android.graphics.Color.parseColor("#4CAF50") // зелёный
+                        2 -> android.graphics.Color.parseColor("#FFC107") // жёлтый
+                        3 -> android.graphics.Color.parseColor("#F44336") // красный
+                        else -> android.graphics.Color.GRAY
+                    }
+
+                    appendColored(
+                        resultBuilder,
+                        "${additive.safetyLabel}\n",
+                        riskColor,
+                        bold = true
+                    )
+
+                    appendColored(
+                        resultBuilder,
+                        "${additive.description}\n\n",
+                        getThemeSecondaryTextColor()
+                    )
 
                     totalRisk += additive.safetyLevel
                     counted++
 
                 } else {
-                    resultBuilder.append("$code — Нет данных\n\n")
+
+                    appendColored(
+                        resultBuilder,
+                        "$code — Нет данных\n\n",
+                        android.graphics.Color.GRAY,
+                        bold = true
+                    )
                 }
             }
 
@@ -101,10 +138,49 @@ class ScanActivity : AppCompatActivity() {
                 resultBuilder.append("Общая оценка риска: $averageRisk / 3")
             }
 
-            ResultBottomSheetFragment(resultBuilder.toString()) {}
+            ResultBottomSheetFragment(resultBuilder) {}
                 .show(supportFragmentManager, "result")
         }
 
+    }
+
+    private fun appendColored(
+        builder: android.text.SpannableStringBuilder,
+        text: String,
+        color: Int,
+        bold: Boolean = false
+    ) {
+        val start = builder.length
+        builder.append(text)
+        val end = builder.length
+
+        builder.setSpan(
+            android.text.style.ForegroundColorSpan(color),
+            start,
+            end,
+            android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        if (bold) {
+            builder.setSpan(
+                android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
+                start,
+                end,
+                android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+    }
+
+    private fun getThemeTextColor(): Int {
+        val typedValue = android.util.TypedValue()
+        theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true)
+        return ContextCompat.getColor(this, typedValue.resourceId)
+    }
+
+    private fun getThemeSecondaryTextColor(): Int {
+        val typedValue = android.util.TypedValue()
+        theme.resolveAttribute(android.R.attr.textColorSecondary, typedValue, true)
+        return ContextCompat.getColor(this, typedValue.resourceId)
     }
 
     private fun startCamera() {
@@ -122,7 +198,6 @@ class ScanActivity : AppCompatActivity() {
                     it.setSurfaceProvider(binding.previewView.surfaceProvider)
                 }
 
-            // ImageAnalysis с повышенным разрешением
             val imageAnalyzer = ImageAnalysis.Builder()
                 .setTargetResolution(Size(1920, 1080)) // лучше для OCR
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
@@ -148,7 +223,7 @@ class ScanActivity : AppCompatActivity() {
                 imageAnalyzer
             )
 
-            // 🔥 Автофокус по центру экрана
+            // Автофокус по центру экрана
             binding.previewView.post {
 
                 val factory = binding.previewView.meteringPointFactory
@@ -194,7 +269,7 @@ class ScanActivity : AppCompatActivity() {
 
                         val box = block.boundingBox
 
-                        if (box != null && frameRect.contains(box)) {
+                        if (box != null && android.graphics.Rect.intersects(frameRect, box)) {
                             filteredText.append(block.text).append("\n")
                         }
                     }
