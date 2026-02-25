@@ -3,7 +3,10 @@ package com.example.smartcookai
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.smartcookai.data.AppDatabase
 import com.example.smartcookai.data.RecipeEntity
@@ -12,6 +15,7 @@ import com.example.smartcookai.databinding.ActivityRecipeDetailsBinding
 import com.example.smartcookai.viewmodel.RecipeViewModel
 import com.example.smartcookai.viewmodel.RecipeViewModelFactory
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 
 class RecipeDetailsActivity : AppCompatActivity() {
 
@@ -64,50 +68,52 @@ class RecipeDetailsActivity : AppCompatActivity() {
         binding.btnDelete.setOnClickListener {
             deleteRecipe()
         }
-
-        binding.btnDelete.animate()
-            .scaleX(1f)
-            .scaleY(1f)
-            .setDuration(300)
-            .start()
-
-        binding.btnDelete.setOnLongClickListener {
-            showSnackbar("Удалить рецепт")
-            true
-        }
     }
 
     private fun deleteRecipe() {
         currentRecipe?.let { recipe ->
-            MaterialAlertDialogBuilder(this)
+            val dialog = MaterialAlertDialogBuilder(this)
                 .setTitle("Удаление рецепта")
-                .setMessage("Вы уверены, что хотите удалить рецепт \"${recipe.title}\"? Это действие нельзя отменить.")
+                .setMessage("Вы уверены, что хотите удалить рецепт \"${recipe.title}\"?")
                 .setPositiveButton("Удалить") { _, _ ->
                     performDeletion(recipe)
                 }
                 .setNegativeButton("Отмена", null)
                 .setCancelable(true)
                 .show()
+
+            dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE)
+                .setTextColor(ContextCompat.getColor(this, R.color.colorAccentDark))
+
+            dialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE)
+                .setTextColor(ContextCompat.getColor(this, R.color.colorAccentDark))
         }
     }
 
     private fun performDeletion(recipe: RecipeEntity) {
         recipeViewModel.deleteRecipe(recipe)
-
-        showSnackbar("Рецепт \"${recipe.title}\" удален", "Отменить") {
-            //Действие при отмене - восстанавливаем рецепт
-            recipeViewModel.addRecipe(recipe)
-            showSnackbar("Рецепт восстановлен")
+        val handler = binding.root
+        val navigateRunnable = Runnable {
+            navigateToMain()
         }
 
-        // 4. Через 2 секунды возвращаемся на главный экран
-        binding.root.postDelayed({
-            navigateToMain()
-        }, 2000)
+        handler.postDelayed(navigateRunnable, 2000)
+
+        showUndoSnackbar(
+            message = "Рецепт \"${recipe.title}\" удален",
+            actionText = "Отменить"
+        ) {
+            handler.removeCallbacks(navigateRunnable)
+
+            recipeViewModel.addRecipe(recipe)
+
+            showUndoSnackbar("Рецепт восстановлен")
+        }
+
     }
 
     private fun showErrorAndClose() {
-        showSnackbar("Ошибка загрузки рецепта")
+        showUndoSnackbar("Ошибка загрузки рецепта")
         binding.root.postDelayed({
             navigateToMain()
         }, 1500)
@@ -118,17 +124,35 @@ class RecipeDetailsActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun showSnackbar(message: String, actionText: String? = null, action: (() -> Unit)? = null) {
-        val snackbar = com.google.android.material.snackbar.Snackbar.make(
-            binding.root,
+    private fun showUndoSnackbar(
+        message: String,
+        actionText: String? = null,
+        action: (() -> Unit)? = null
+    ) {
+
+        val snackbar = Snackbar.make(
+            window.decorView.findViewById(android.R.id.content),
             message,
-            com.google.android.material.snackbar.Snackbar.LENGTH_LONG
+            Snackbar.LENGTH_LONG
         )
+
+        snackbar.anchorView = binding.bottomBar.bottomBar
+        val snackbarView = snackbar.view
+        val params = snackbarView.layoutParams as? CoordinatorLayout.LayoutParams
+        params?.apply {
+            marginStart = 16
+            marginEnd = 16
+            bottomMargin = 16
+        }
 
         actionText?.let {
             snackbar.setAction(it) {
                 action?.invoke()
             }
+
+            snackbar.setActionTextColor(
+                ContextCompat.getColor(this, R.color.colorAccentDark)
+            )
         }
 
         snackbar.show()

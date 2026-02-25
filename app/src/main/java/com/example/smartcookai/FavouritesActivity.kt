@@ -90,9 +90,12 @@ class FavouritesActivity : AppCompatActivity() {
         snackbar.anchorView = binding.bottomBar.bottomBar
 
         snackbar.setAction("ОТМЕНИТЬ") {
-            // Возвращаем рецепт в избранное
             undoRemove()
         }
+
+        snackbar.setActionTextColor(
+            ContextCompat.getColor(this, R.color.colorAccentDark)
+        )
 
         snackbar.addCallback(object : Snackbar.Callback() {
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
@@ -120,35 +123,6 @@ class FavouritesActivity : AppCompatActivity() {
             // Возвращаем рецепт в избранное
             val restoredRecipe = recipe.copy(isFavorite = true)
             recipeViewModel.updateRecipe(restoredRecipe)
-
-            // Показываем КОРОТКОЕ уведомление об отмене над bottom bar
-            val undoConfirmationSnackbar = Snackbar.make(
-                binding.root,
-                "Действие отменено",
-                Snackbar.LENGTH_SHORT
-            )
-
-            // Привязываем к bottom bar
-            undoConfirmationSnackbar.anchorView = binding.bottomBar.bottomBar
-
-            // Настраиваем цвета
-            undoConfirmationSnackbar.setActionTextColor(
-                ContextCompat.getColor(this, R.color.snackbar_background)
-            )
-
-            val textView = undoConfirmationSnackbar.view.findViewById<TextView>(
-                com.google.android.material.R.id.snackbar_text
-            )
-
-            val params = textView.layoutParams as? CoordinatorLayout.LayoutParams
-            params?.apply {
-                marginStart = 16
-                marginEnd = 16
-                bottomMargin = 16
-            }
-
-            undoConfirmationSnackbar.show()
-
             removedRecipe = null
         }
     }

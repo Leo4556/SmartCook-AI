@@ -88,7 +88,10 @@ class MainActivity : AppCompatActivity() {
         showUndoSnackbar(recipe.title, !recipe.isFavorite)
     }
 
-    private fun showUndoSnackbar(recipeTitle: String, addedToFavorites: Boolean) {
+    private fun showUndoSnackbar(
+        recipeTitle: String,
+        addedToFavorites: Boolean,
+    ) {
         val message = if (addedToFavorites) {
             "Рецепт \"$recipeTitle\" добавлен в избранное"
         } else {
@@ -108,6 +111,10 @@ class MainActivity : AppCompatActivity() {
             // Отменяем действие - возвращаем предыдущее состояние
             undoLastFavoriteChange()
         }
+
+        snackbar.setActionTextColor(
+            ContextCompat.getColor(this, R.color.colorAccentDark)
+        )
 
         val snackbarView = snackbar.view
         val textView = snackbarView.findViewById<android.widget.TextView>(com.google.android.material.R.id.snackbar_text)
@@ -138,9 +145,7 @@ class MainActivity : AppCompatActivity() {
 
             // Тоже привязываем к bottom bar
             undoConfirmationSnackbar.anchorView = binding.bottomBar.bottomBar
-
             val snackbarView = undoConfirmationSnackbar.view
-
             val params = snackbarView.layoutParams as? CoordinatorLayout.LayoutParams
             params?.apply {
                 marginStart = 16

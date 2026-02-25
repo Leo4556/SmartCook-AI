@@ -230,7 +230,7 @@
         android:backgroundTint="@color/colorAccentLight"
         android:contentDescription="Удалить рецепт"
         android:src="@drawable/ic_delete"
-        android:tint="@android:color/white"
+        app:tint="@color/colorIconBottomBarDefault"
         app:elevation="8dp"
         app:layout_anchor="@id/bottomBar"
         app:layout_anchorGravity="top|end"/>

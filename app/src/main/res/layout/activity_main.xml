@@ -107,7 +107,7 @@
         android:contentDescription="Сканировать состав"
         android:src="@drawable/ic_ai"
         app:backgroundTint="@color/colorAccentLight"
-        app:tint="@android:color/white"
+        app:tint="@color/colorIconBottomBarDefault"
         app:layout_constraintBottom_toTopOf="@id/bottomBar"
         app:layout_constraintEnd_toEndOf="parent"/>
 
