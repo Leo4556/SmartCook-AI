@@ -39,6 +39,17 @@ class RecipeDetailsActivity : AppCompatActivity() {
 
         setupBottomNavigation()
         setupDeleteButton()
+        setupEditButton()
+    }
+
+    private fun setupEditButton() {
+        binding.btnEdit.setOnClickListener {
+            currentRecipe?.let { recipe ->
+                val intent = Intent(this, EditRecipeActivity::class.java)
+                intent.putExtra("recipe", recipe)
+                startActivity(intent)
+            }
+        }
     }
 
     private fun displayRecipe() {

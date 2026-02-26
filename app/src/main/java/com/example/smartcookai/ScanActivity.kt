@@ -31,7 +31,7 @@ class ScanActivity : AppCompatActivity() {
     private lateinit var binding: ActivityScanBinding
 
     private var latestDetectedText: String = ""
-    private val eNumberRegex = Regex("""\b[Ee][\s-]?\d{4}\b""")
+    private val eNumberRegex = Regex("""\b[Ee][\s-]?\d{3,4}\b""")
 
     private val textBuffer = ArrayDeque<String>()
     private val BUFFER_SIZE = 5
