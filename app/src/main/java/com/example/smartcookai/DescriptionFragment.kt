@@ -27,9 +27,18 @@ class DescriptionFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.etRecipeDescription.addTextChangedListener {
-            sharedViewModel.description = it.toString()
+        sharedViewModel.descriptionLiveData.observe(viewLifecycleOwner) { description ->
+            if (description.isNotEmpty()) {
+                binding.etRecipeDescription.setText(description)
+            }
         }
+
+        binding.etRecipeDescription.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                sharedViewModel.description = binding.etRecipeDescription.text.toString()
+            }
+        }
+
     }
 
     fun getDescription(): String {

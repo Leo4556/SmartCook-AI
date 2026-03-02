@@ -117,6 +117,7 @@ class AddActivity : AppCompatActivity() {
         }
 
         binding.etDishName.setText(result.foodName)
+        binding.edCookingTime.setText(result.cookingTime.toString())
 
         val ingredientsText = if (result.ingredients.isNotEmpty()) {
             result.ingredients.joinToString("\n") { "• $it" }
@@ -125,6 +126,7 @@ class AddActivity : AppCompatActivity() {
         }
 
         sharedViewModel.ingredients = ingredientsText
+        sharedViewModel.description = result.description
 
         if (ingredientsFragment.isAdded) {
             ingredientsFragment.updateIngredients(ingredientsText)
