@@ -28,12 +28,21 @@ class RecipeDetailsActivity : AppCompatActivity() {
         binding = ActivityRecipeDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        currentRecipe = intent.getParcelableExtra("recipe")
-
         val db = AppDatabase.getInstance(this)
         val repo = RecipeRepository(db.recipeDao())
         val factory = RecipeViewModelFactory(repo)
         recipeViewModel = ViewModelProvider(this, factory).get(RecipeViewModel::class.java)
+
+        currentRecipe = intent.getParcelableExtra("recipe")
+        currentRecipe?.id?.let { id ->
+            recipeViewModel.getRecipeByIdLive(id)
+                .observe(this) { updatedRecipe ->
+                    if (updatedRecipe != null) {
+                        currentRecipe = updatedRecipe
+                        displayRecipe()
+                    }
+                }
+        }
 
         displayRecipe()
 
