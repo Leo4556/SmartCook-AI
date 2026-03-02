@@ -5,12 +5,13 @@
     android:layout_height="match_parent"
     android:background="?android:attr/colorBackground">
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="80dp"
         android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:padding="10dp">
 
         <LinearLayout
@@ -209,7 +210,9 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
-    </ScrollView>
+
+
+    </androidx.core.widget.NestedScrollView>
 
     <include
         android:id="@+id/bottomBar"
@@ -221,6 +224,7 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnEdit"
+        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
@@ -230,12 +234,11 @@
         android:contentDescription="Редактировать рецепт"
         android:src="@drawable/ic_edit"
         app:elevation="8dp"
-        app:layout_anchor="@id/bottomBar"
-        app:layout_anchorGravity="top|end"
         app:tint="@color/colorIconBottomBarDefault" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnDelete"
+        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
@@ -245,7 +248,5 @@
         android:contentDescription="Удалить рецепт"
         android:src="@drawable/ic_delete"
         app:elevation="8dp"
-        app:layout_anchor="@id/bottomBar"
-        app:layout_anchorGravity="top|end"
         app:tint="@color/colorIconBottomBarDefault" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
