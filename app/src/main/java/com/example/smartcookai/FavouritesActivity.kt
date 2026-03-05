@@ -18,7 +18,7 @@ import com.example.smartcookai.viewmodel.RecipeViewModel
 import com.example.smartcookai.viewmodel.RecipeViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 
-class FavouritesActivity : AppCompatActivity() {
+class FavouritesActivity : BaseActivity() {
 
     private lateinit var binding: ActivityFavouritesBinding
     private lateinit var adapter: RecipeAdapter

@@ -26,7 +26,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 
-class AddActivity : AppCompatActivity() {
+class AddActivity : BaseActivity() {
 
     private val sharedViewModel: AddRecipeSharedViewModel by viewModels()
     private lateinit var binding: ActivityAddBinding

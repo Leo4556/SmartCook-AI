@@ -26,4 +26,10 @@ interface RecipeDao {
 
     @Query("SELECT * FROM recipes WHERE id = :id LIMIT 1")
     fun getRecipeByIdLive(id: Int): LiveData<RecipeEntity>
+
+    @Query("UPDATE recipes SET isFavorite = 0")
+    suspend fun clearAllFavorites()
+
+    @Query("DELETE FROM recipes ")
+    suspend fun deleteAllRecipes()
 }

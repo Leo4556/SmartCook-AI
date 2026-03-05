@@ -34,7 +34,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
 
-class EditRecipeActivity : AppCompatActivity() {
+class EditRecipeActivity : BaseActivity() {
 
     private lateinit var binding: ActivityEditRecipeBinding
 

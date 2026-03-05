@@ -26,7 +26,7 @@ import androidx.camera.core.*
 import com.example.smartcookai.utils.EAdditiveRepository
 
 
-class ScanActivity : AppCompatActivity() {
+class ScanActivity : BaseActivity() {
 
     private lateinit var binding: ActivityScanBinding
 

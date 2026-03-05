@@ -32,4 +32,12 @@ class RecipeRepository(private val dao: RecipeDao) {
     fun getRecipeByIdLive(id: Int): LiveData<RecipeEntity> {
         return dao.getRecipeByIdLive(id)
     }
+
+    suspend fun clearFavorites() {
+        dao.clearAllFavorites()
+    }
+
+    suspend fun deleteAllRecipes(){
+        dao.deleteAllRecipes()
+    }
 }

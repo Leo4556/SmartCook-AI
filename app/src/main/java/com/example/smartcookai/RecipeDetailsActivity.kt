@@ -17,7 +17,7 @@ import com.example.smartcookai.viewmodel.RecipeViewModelFactory
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 
-class RecipeDetailsActivity : AppCompatActivity() {
+class RecipeDetailsActivity : BaseActivity() {
 
     private lateinit var binding: ActivityRecipeDetailsBinding
     private lateinit var recipeViewModel: RecipeViewModel
