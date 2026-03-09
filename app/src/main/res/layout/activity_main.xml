@@ -64,7 +64,8 @@
             app:cursorColor="@color/colorTextPrimary"
             app:hintTextColor="@color/colorTextPrimary"
             app:startIconDrawable="@drawable/ic_search"
-            app:startIconTint="@color/colorIconDefault">
+            app:startIconTint="@color/colorIconDefault"
+            app:endIconMode="clear_text">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etSearch"

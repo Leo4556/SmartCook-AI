@@ -68,7 +68,8 @@
             app:boxStrokeColor="@color/input_stroke_color"
             app:cursorColor="@color/colorTextPrimary"
             app:startIconDrawable="@drawable/ic_search"
-            app:startIconTint="@color/colorIconDefault">
+            app:startIconTint="@color/colorIconDefault"
+            app:endIconMode="clear_text">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etSearch"
