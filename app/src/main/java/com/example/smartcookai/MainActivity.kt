@@ -22,6 +22,7 @@ class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var adapter: RecipeAdapter
     private lateinit var recipeViewModel: RecipeViewModel
+    private var allRecipes: List<RecipeEntity> = emptyList()
 
     // Переменная для отслеживания последнего измененного рецепта для отмены
     private var lastModifiedRecipe: RecipeEntity? = null
@@ -45,7 +46,7 @@ class MainActivity : BaseActivity() {
         setupBottomNavigation()
 
         binding.bottomBar.tabHome.isSelected = true
-        binding.btnScan.setOnClickListener{
+        binding.btnScan.setOnClickListener {
             startActivity(Intent(this, ScanActivity::class.java))
         }
     }
@@ -117,7 +118,8 @@ class MainActivity : BaseActivity() {
         )
 
         val snackbarView = snackbar.view
-        val textView = snackbarView.findViewById<android.widget.TextView>(com.google.android.material.R.id.snackbar_text)
+        val textView =
+            snackbarView.findViewById<android.widget.TextView>(com.google.android.material.R.id.snackbar_text)
         textView.maxLines = 3
 
         val params = snackbarView.layoutParams as? CoordinatorLayout.LayoutParams
@@ -161,23 +163,51 @@ class MainActivity : BaseActivity() {
 
     private fun observeAllRecipes() {
         recipeViewModel.allRecipes.observe(this) { recipes ->
-            // Применяем текущий поиск, если он есть
-            val filteredRecipes = if (currentSearchQuery.isNotEmpty()) {
-                recipes.filter {
-                    it.title.contains(currentSearchQuery, ignoreCase = true) ||
-                            it.ingredients.contains(currentSearchQuery, ignoreCase = true) ||
-                            it.description.contains(currentSearchQuery, ignoreCase = true)
-                }
-            } else {
-                recipes
-            }
-            adapter.updateList(filteredRecipes)
+            allRecipes = recipes
+            applySearch(currentSearchQuery)
+        }
+    }
 
-            if (filteredRecipes.isEmpty()) {
-                showEmptyState()
-            } else {
-                hideEmptyState()
+    private fun applySearch(query: String) {
+
+        val filteredRecipes = if (query.isNotBlank()) {
+
+            val words = query
+                .lowercase()
+                .trim()
+                .split("\\s+".toRegex())
+
+            allRecipes.filter { recipe ->
+
+                val text = (
+                        recipe.title +
+                                " " +
+                                recipe.ingredients +
+                                " " +
+                                recipe.description
+                        ).lowercase()
+
+                words.all { word ->
+                    text.contains(word)
+                }
             }
+
+        } else {
+            allRecipes
+        }
+
+        updateUI(filteredRecipes)
+    }
+
+
+    private fun updateUI(recipes: List<RecipeEntity>) {
+
+        adapter.updateList(recipes)
+
+        if (recipes.isEmpty()) {
+            showEmptyState()
+        } else {
+            hideEmptyState()
         }
     }
 
@@ -187,40 +217,13 @@ class MainActivity : BaseActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 currentSearchQuery = s?.toString() ?: ""
-                // Перезапускаем наблюдение для применения фильтрации
-                recipeViewModel.allRecipes.observe(this@MainActivity) { recipes ->
-                    val filteredRecipes = if (currentSearchQuery.isNotEmpty()) {
-                        recipes.filter {
-                            it.title.contains(currentSearchQuery, ignoreCase = true) ||
-                                    it.ingredients.contains(currentSearchQuery, ignoreCase = true) ||
-                                    it.description.contains(currentSearchQuery, ignoreCase = true)
-                        }
-                    } else {
-                        recipes
-                    }
-                    adapter.updateList(filteredRecipes)
-
-                    if (filteredRecipes.isEmpty()) {
-                        showEmptyState()
-                    } else {
-                        hideEmptyState()
-                    }
-                }
+                applySearch(currentSearchQuery)
             }
 
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        // Показываем/скрываем кнопку очистки
-        binding.etSearch.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
-        })
     }
 
     private fun showEmptyState() {

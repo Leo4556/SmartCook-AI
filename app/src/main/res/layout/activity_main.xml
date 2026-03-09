@@ -25,7 +25,7 @@
         android:id="@+id/tvEmptyAll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Нет избранных рецептов"
+        android:text="Нет рецептов"
         android:textColor="@color/colorTextSecondary"
         android:textSize="16sp"
         android:visibility="gone"

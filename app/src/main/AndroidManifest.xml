@@ -34,11 +34,11 @@
         <activity
             android:name=".FavouritesActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".RecipeDetailsActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".SettingsActivity"
             android:exported="false" />

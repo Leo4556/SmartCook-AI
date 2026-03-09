@@ -24,6 +24,8 @@ class FavouritesActivity : BaseActivity() {
     private lateinit var adapter: RecipeAdapter
     private lateinit var recipeViewModel: RecipeViewModel
 
+    private var allFavouriteRecipes: List<RecipeEntity> = emptyList()
+
     // Переменная для хранения рецепта, который удалили (на случай отмены)
     private var removedRecipe: RecipeEntity? = null
 
@@ -127,84 +129,94 @@ class FavouritesActivity : BaseActivity() {
         }
     }
 
+
+    private fun observeFavorites() {
+        recipeViewModel.getFavouriteRecipes().observe(this) { favouriteRecipes ->
+            allFavouriteRecipes = favouriteRecipes.filter { it.isFavorite }
+            applySearch(currentSearchQuery)
+        }
+    }
+
+
     private fun setupSearch() {
-        // Делаем SearchView видимым
+
         binding.searchLayout.visibility = android.view.View.VISIBLE
 
         binding.etSearch.addTextChangedListener(object : TextWatcher {
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
                 currentSearchQuery = s?.toString() ?: ""
-                performSearch(currentSearchQuery)
+                applySearch(currentSearchQuery)
             }
 
             override fun afterTextChanged(s: Editable?) {}
-        })
 
-//        binding.btnClearSearch.setOnClickListener {
-//            binding.etSearch.text?.clear()
-//            binding.etSearch.clearFocus()
-//        }
-
-        // Показываем/скрываем кнопку очистки в зависимости от наличия текста
-        binding.etSearch.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//                binding.btnClearSearch.visibility = if (s.isNullOrEmpty()) {
-//                    android.view.View.GONE
-//                } else {
-//                    android.view.View.VISIBLE
-//                }
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
         })
     }
 
-    private fun performSearch(query: String) {
-        if (query.isEmpty()) {
-            // Если поиск пустой - показываем все избранные
-            recipeViewModel.getFavouriteRecipes().observe(this) { favouriteRecipes ->
-                val favoritesOnly = favouriteRecipes.filter { it.isFavorite }
-                updateUI(favoritesOnly)
+    private fun applySearch(query: String) {
+
+        val filteredRecipes = if (query.isNotBlank()) {
+
+            val words = query
+                .lowercase()
+                .trim()
+                .split("\\s+".toRegex())
+
+            allFavouriteRecipes.filter { recipe ->
+
+                val text = (
+                        recipe.title +
+                                " " +
+                                recipe.ingredients +
+                                " " +
+                                recipe.description
+                        ).lowercase()
+
+                words.all { word ->
+                    text.contains(word)
+                }
             }
+
         } else {
-            // Ищем по избранным
-            recipeViewModel.searchFavouriteRecipes(query).observe(this) { searchResults ->
-                updateUI(searchResults)
-            }
+            allFavouriteRecipes
         }
+
+        updateUI(filteredRecipes)
     }
 
     private fun updateUI(recipes: List<RecipeEntity>) {
+
         adapter.updateList(recipes)
 
-        // Показываем/скрываем сообщение о пустом списке
         if (recipes.isEmpty()) {
-            binding.tvEmptyFavorites.visibility = android.view.View.VISIBLE
-            if (currentSearchQuery.isNotEmpty()) {
-                binding.tvEmptyFavorites.text =
-                    "По запросу \"$currentSearchQuery\" ничего не найдено"
-            } else {
-                binding.tvEmptyFavorites.text = "Нет избранных рецептов"
-            }
+            showEmptyState()
         } else {
-            binding.tvEmptyFavorites.visibility = android.view.View.GONE
+            hideEmptyState()
         }
     }
 
-    private fun observeFavorites() {
-        // Наблюдаем только за избранными рецептами
-        recipeViewModel.getFavouriteRecipes().observe(this) { favouriteRecipes ->
-            // Если нет активного поиска, обновляем список
-            if (currentSearchQuery.isEmpty()) {
-                val favoritesOnly = favouriteRecipes.filter { it.isFavorite }
-                updateUI(favoritesOnly)
-            }
+
+    private fun showEmptyState() {
+        binding.rvFavourites.visibility = android.view.View.GONE
+        binding.tvEmptyFavorites.visibility = android.view.View.VISIBLE
+
+        if (currentSearchQuery.isNotEmpty()) {
+            binding.tvEmptyFavorites.text =
+                "По запросу \"$currentSearchQuery\" ничего не найдено"
+        } else {
+            binding.tvEmptyFavorites.text = "Нет избранных рецептов"
         }
     }
+
+    private fun hideEmptyState() {
+        binding.rvFavourites.visibility = android.view.View.VISIBLE
+        binding.tvEmptyFavorites.visibility = android.view.View.GONE
+    }
+
 
     private fun setupBottomNavigation() {
         // Подсветим текущую вкладку "Избранное"
