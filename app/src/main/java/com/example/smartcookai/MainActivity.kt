@@ -2,7 +2,11 @@ package com.example.smartcookai
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.smartcookai.data.AppDatabase
@@ -11,12 +15,19 @@ import com.example.smartcookai.data.RecipeRepository
 import com.example.smartcookai.databinding.ActivityMainBinding
 import com.example.smartcookai.viewmodel.RecipeViewModel
 import com.example.smartcookai.viewmodel.RecipeViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var adapter: RecipeAdapter
     private lateinit var recipeViewModel: RecipeViewModel
+    private var allRecipes: List<RecipeEntity> = emptyList()
+
+    // Переменная для отслеживания последнего измененного рецепта для отмены
+    private var lastModifiedRecipe: RecipeEntity? = null
+    private var wasFavorite: Boolean = false
+    private var currentSearchQuery: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,20 +46,25 @@ class MainActivity : AppCompatActivity() {
         setupBottomNavigation()
 
         binding.bottomBar.tabHome.isSelected = true
+        binding.btnScan.setOnClickListener {
+            startActivity(Intent(this, ScanActivity::class.java))
+        }
     }
 
     private fun setupRecyclerView() {
         val layoutManager = GridLayoutManager(this, 2)
         binding.rvRecipes.layoutManager = layoutManager
 
-        adapter = RecipeAdapter(emptyList(),
+        adapter = RecipeAdapter(
+            emptyList(),
             onItemClick = { recipe ->
                 val intent = Intent(this, RecipeDetailsActivity::class.java)
-                intent.putExtra("recipe", recipe) // Ключевое изменение!
+                intent.putExtra("recipe", recipe)
                 startActivity(intent)
             },
             onFavoriteClick = { recipe ->
-                recipeViewModel.toggleFavorite(recipe)
+                // Сразу изменяем состояние избранного
+                toggleFavoriteImmediately(recipe)
             }
         )
 
@@ -58,67 +74,179 @@ class MainActivity : AppCompatActivity() {
         binding.rvRecipes.addItemDecoration(GridSpacingItemDecoration(2, spacingInPixels, true))
     }
 
+    private fun toggleFavoriteImmediately(recipe: RecipeEntity) {
+        // Сохраняем состояние для возможности отмены
+        lastModifiedRecipe = recipe.copy()
+        wasFavorite = recipe.isFavorite
+
+        // Создаем обновленный рецепт с противоположным значением isFavorite
+        val updatedRecipe = recipe.copy(isFavorite = !recipe.isFavorite)
+
+        // Обновляем в базе данных
+        recipeViewModel.updateRecipe(updatedRecipe)
+
+        // Показываем Snackbar с возможностью отмены
+        showUndoSnackbar(recipe.title, !recipe.isFavorite)
+    }
+
+    private fun showUndoSnackbar(
+        recipeTitle: String,
+        addedToFavorites: Boolean,
+    ) {
+        val message = if (addedToFavorites) {
+            "Рецепт \"$recipeTitle\" добавлен в избранное"
+        } else {
+            "Рецепт \"$recipeTitle\" удален из избранного"
+        }
+
+        val snackbar = Snackbar.make(
+            binding.root,
+            message,
+            Snackbar.LENGTH_LONG
+        )
+
+        // Привязываем Snackbar к bottom bar, чтобы он появлялся над ним
+        snackbar.anchorView = binding.bottomBar.bottomBar
+
+        snackbar.setAction("ОТМЕНИТЬ") {
+            // Отменяем действие - возвращаем предыдущее состояние
+            undoLastFavoriteChange()
+        }
+
+        snackbar.setActionTextColor(
+            ContextCompat.getColor(this, R.color.colorAccentDark)
+        )
+
+        val snackbarView = snackbar.view
+        val textView =
+            snackbarView.findViewById<android.widget.TextView>(com.google.android.material.R.id.snackbar_text)
+        textView.maxLines = 3
+
+        val params = snackbarView.layoutParams as? CoordinatorLayout.LayoutParams
+        params?.apply {
+            marginStart = 16
+            marginEnd = 16
+            bottomMargin = 16
+        }
+
+        snackbar.show()
+    }
+
+    private fun undoLastFavoriteChange() {
+        lastModifiedRecipe?.let { recipe ->
+            // Возвращаем исходное состояние избранного
+            val restoredRecipe = recipe.copy(isFavorite = wasFavorite)
+            recipeViewModel.updateRecipe(restoredRecipe)
+
+            // Показываем КОРОТКОЕ уведомление об отмене, тоже над bottom bar
+            val undoConfirmationSnackbar = Snackbar.make(
+                binding.root,
+                if (wasFavorite) "Действие отменено" else "Действие отменено",
+                Snackbar.LENGTH_SHORT
+            )
+
+            // Тоже привязываем к bottom bar
+            undoConfirmationSnackbar.anchorView = binding.bottomBar.bottomBar
+            val snackbarView = undoConfirmationSnackbar.view
+            val params = snackbarView.layoutParams as? CoordinatorLayout.LayoutParams
+            params?.apply {
+                marginStart = 16
+                marginEnd = 16
+                bottomMargin = 16
+            }
+
+            undoConfirmationSnackbar.show()
+
+            lastModifiedRecipe = null
+        }
+    }
+
     private fun observeAllRecipes() {
         recipeViewModel.allRecipes.observe(this) { recipes ->
-            adapter.updateList(recipes)
+            allRecipes = recipes
+            applySearch(currentSearchQuery)
+        }
+    }
 
-            if (recipes.isEmpty()) {
-                showEmptyState()
-            } else {
-                hideEmptyState()
+    private fun applySearch(query: String) {
+
+        val filteredRecipes = if (query.isNotBlank()) {
+
+            val words = query
+                .lowercase()
+                .trim()
+                .split("\\s+".toRegex())
+
+            allRecipes.filter { recipe ->
+
+                val text = (
+                        recipe.title +
+                                " " +
+                                recipe.ingredients +
+                                " " +
+                                recipe.description
+                        ).lowercase()
+
+                words.all { word ->
+                    text.contains(word)
+                }
             }
+
+        } else {
+            allRecipes
+        }
+
+        updateUI(filteredRecipes)
+    }
+
+
+    private fun updateUI(recipes: List<RecipeEntity>) {
+
+        adapter.updateList(recipes)
+
+        if (recipes.isEmpty()) {
+            showEmptyState()
+        } else {
+            hideEmptyState()
         }
     }
 
     private fun setupSearch() {
-        binding.etSearch.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH) {
-                performSearch(binding.etSearch.text.toString())
-                return@setOnEditorActionListener true
-            }
-            false
-        }
-
-        binding.etSearch.addTextChangedListener(object : android.text.TextWatcher {
+        binding.etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
-            override fun afterTextChanged(s: android.text.Editable?) {
-                performSearch(s.toString())
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                currentSearchQuery = s?.toString() ?: ""
+                applySearch(currentSearchQuery)
             }
+
+            override fun afterTextChanged(s: Editable?) {}
         })
-    }
 
-    private fun performSearch(query: String) {
-        recipeViewModel.allRecipes.observe(this) { allRecipes ->
-            val filtered = if (query.isBlank()) {
-                allRecipes
-            } else {
-                allRecipes.filter {
-                    it.title.contains(query, ignoreCase = true) ||
-                            it.ingredients.contains(query, ignoreCase = true) ||
-                            it.description.contains(query, ignoreCase = true)
-                }
-            }
-            adapter.updateList(filtered)
-        }
+
     }
 
     private fun showEmptyState() {
         binding.rvRecipes.visibility = android.view.View.GONE
+        binding.tvEmptyAll.visibility = android.view.View.VISIBLE
+        if (currentSearchQuery.isNotEmpty()) {
+            binding.tvEmptyAll.text = "По запросу \"$currentSearchQuery\" ничего не найдено"
+        } else {
+            binding.tvEmptyAll.text = "Нет рецептов\nНажмите + чтобы добавить"
+        }
     }
 
     private fun hideEmptyState() {
         binding.rvRecipes.visibility = android.view.View.VISIBLE
+        binding.tvEmptyAll.visibility = android.view.View.GONE
     }
 
     private fun setupBottomNavigation() {
+        binding.bottomBar.tabHome.isSelected = true
+
         binding.bottomBar.tabHome.setOnClickListener {
-            recipeViewModel.allRecipes
-            binding.bottomBar.tabHome.isSelected = true
-            binding.bottomBar.tabFav.isSelected = false
-            binding.bottomBar.tabAdd.isSelected = false
-            binding.bottomBar.tabSettings.isSelected = false
+            // Уже на главной, просто прокручиваем вверх
+            binding.rvRecipes.smoothScrollToPosition(0)
         }
 
         binding.bottomBar.tabFav.setOnClickListener {
@@ -136,6 +264,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
+
     // Класс для отступов между карточками
     inner class GridSpacingItemDecoration(
         private val spanCount: Int,
@@ -168,10 +297,15 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         // Обновляем список при возвращении на экран
-        recipeViewModel.allRecipes
         binding.bottomBar.tabHome.isSelected = true
         binding.bottomBar.tabFav.isSelected = false
         binding.bottomBar.tabAdd.isSelected = false
         binding.bottomBar.tabSettings.isSelected = false
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Очищаем сохраненные данные при уничтожении активности
+        lastModifiedRecipe = null
     }
 }

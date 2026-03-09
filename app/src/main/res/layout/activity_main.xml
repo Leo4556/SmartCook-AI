@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_home"
@@ -13,14 +12,27 @@
         android:id="@+id/tvFavTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
         android:text="Все рецепты"
         android:textColor="@color/colorTextPrimary"
         android:textSize="26sp"
         android:textStyle="bold"
-        android:paddingStart="16dp"
-        android:paddingTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvEmptyAll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Нет рецептов"
+        android:textColor="@color/colorTextSecondary"
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/searchLayout"
@@ -31,10 +43,10 @@
         android:layout_marginEnd="16dp"
         app:cardCornerRadius="16dp"
         app:cardElevation="2dp"
-        app:strokeWidth="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvFavTitle">
+        app:layout_constraintTop_toBottomOf="@+id/tvFavTitle"
+        app:strokeWidth="0dp">
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
@@ -42,17 +54,18 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="6dp"
             android:hint="Поиск рецептов"
+            android:padding="10dp"
             app:boxCornerRadiusBottomEnd="12dp"
             app:boxCornerRadiusBottomStart="12dp"
             app:boxCornerRadiusTopEnd="12dp"
             app:boxCornerRadiusTopStart="12dp"
-            app:boxStrokeWidth="0.5dp"
-            android:padding="10dp"
-            app:hintTextColor="@color/colorTextPrimary"
             app:boxStrokeColor="@color/input_stroke_color"
+            app:boxStrokeWidth="0.5dp"
             app:cursorColor="@color/colorTextPrimary"
+            app:hintTextColor="@color/colorTextPrimary"
             app:startIconDrawable="@drawable/ic_search"
-            app:startIconTint="@color/colorIconDefault">
+            app:startIconTint="@color/colorIconDefault"
+            app:endIconMode="clear_text">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etSearch"
@@ -70,12 +83,12 @@
         android:id="@+id/rvRecipes"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:paddingHorizontal="6dp"
         android:clipToPadding="false"
-        app:layout_constraintTop_toBottomOf="@id/searchLayout"
+        android:paddingHorizontal="6dp"
         app:layout_constraintBottom_toTopOf="@id/bottomBar"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchLayout"
         tools:listitem="@layout/item_recipe" />
 
     <include
@@ -87,5 +100,17 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnScan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="28dp"
+        android:contentDescription="Сканировать состав"
+        android:src="@drawable/ic_ai"
+        app:backgroundTint="@color/colorAccentLight"
+        app:layout_constraintBottom_toTopOf="@id/bottomBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@color/colorIconBottomBarDefault" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

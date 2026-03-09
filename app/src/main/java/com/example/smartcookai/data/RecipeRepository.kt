@@ -24,4 +24,20 @@ class RecipeRepository(private val dao: RecipeDao) {
     fun getFavouriteRecipes(): LiveData<List<RecipeEntity>> {
         return dao.getFavourites()
     }
+
+    fun searchFavouriteRecipes(query: String): LiveData<List<RecipeEntity>> {
+        return dao.searchFavourites(query)
+    }
+
+    fun getRecipeByIdLive(id: Int): LiveData<RecipeEntity> {
+        return dao.getRecipeByIdLive(id)
+    }
+
+    suspend fun clearFavorites() {
+        dao.clearAllFavorites()
+    }
+
+    suspend fun deleteAllRecipes(){
+        dao.deleteAllRecipes()
+    }
 }

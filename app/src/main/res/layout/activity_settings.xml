@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_settings"
@@ -14,12 +13,12 @@
         android:id="@+id/tvSettingsTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
         android:text="Настройки"
         android:textColor="@color/colorTextPrimary"
         android:textSize="26sp"
         android:textStyle="bold"
-        android:paddingStart="16dp"
-        android:paddingTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -28,13 +27,13 @@
         android:id="@+id/settingsScroll"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:fillViewport="true"
         android:paddingHorizontal="16dp"
         android:paddingTop="8dp"
-        android:fillViewport="true"
-        app:layout_constraintTop_toBottomOf="@id/tvSettingsTitle"
         app:layout_constraintBottom_toTopOf="@id/bottomBar"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/tvSettingsTitle">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -60,32 +59,32 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
                         android:text="Уведомления"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
                         android:textColor="@color/colorTextPrimary"
-                        android:layout_marginBottom="10dp"/>
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Push-уведомления"
-                            android:textSize="16sp"
-                            android:textColor="@color/colorTextPrimary" />
+                            android:textColor="@color/colorTextPrimary"
+                            android:textSize="16sp" />
 
                         <com.google.android.material.switchmaterial.SwitchMaterial
                             android:id="@+id/switchNotifications"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            app:trackTint="@color/colorAccentDark"
-                            app:thumbTint="@color/colorAccentLight" />
+                            app:thumbTint="@color/colorAccentLight"
+                            app:trackTint="@color/colorAccentDark" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -109,33 +108,116 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
                         android:text="Оформление"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
                         android:textColor="@color/colorTextPrimary"
-                        android:layout_marginBottom="10dp"/>
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:gravity="center"
+                        android:orientation="horizontal">
 
-                        <TextView
+                        <!--<TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Тёмная тема"
                             android:textSize="16sp"
-                            android:textColor="@color/colorTextPrimary" />
+                            android:textColor="@color/colorTextPrimary" />-->
 
-                        <com.google.android.material.switchmaterial.SwitchMaterial
-                            android:id="@+id/switchTheme"
-                            android:layout_width="wrap_content"
+                        <RadioGroup
+                            android:id="@+id/themeToggle"
+                            style="@style/Theme.SmartCookAI"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            app:trackTint="@color/colorAccentDark"
-                            app:thumbTint="@color/colorAccentLight" />
+                            app:selectionRequired="true"
+                            app:singleSelection="true">
+
+                            <RadioButton
+                                android:id="@+id/radioLight"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Светлое"
+                                android:textColor="?attr/colorOnSurface"
+                                android:textSize="15sp" />
+
+                            <RadioButton
+                                android:id="@+id/radioDark"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Тёмное"
+                                android:textColor="?attr/colorOnSurface"
+                                android:textSize="15sp" />
+
+                            <RadioButton
+                                android:id="@+id/radioSystem"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Системное"
+                                android:textColor="?attr/colorOnSurface"
+                                android:textSize="15sp" />
+
+                        </RadioGroup>
+
+
                     </LinearLayout>
+
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+
+
+
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_gravity=""
+                    android:padding="8dp">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnClearFavorites"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        app:rippleColor="@color/colorAccentLight"
+                        app:strokeWidth="0.5dp"
+                        android:layout_marginTop="12dp"
+                        android:text="Очистить избранное"
+                        android:textColor="@color/colorTextPrimary"
+                        app:icon="@drawable/ic_bookmark"
+                        app:iconGravity="textStart"
+                        app:iconPadding="8dp"
+                        app:iconTint="@color/colorIconDefault"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnDeleteAllRecipes"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:rippleColor="@color/colorAccentLight"
+                        app:strokeWidth="0.5dp"
+                        android:layout_marginTop="2dp"
+                        android:text="Удалить все рецепты"
+                        android:textColor="@color/colorTextPrimary"
+                        app:icon="@drawable/ic_delete"
+                        app:iconGravity="textStart"
+                        app:iconPadding="8dp"
+                        app:iconTint="@color/design_default_color_error" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -158,31 +240,34 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
                         android:text="О приложении"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
                         android:textColor="@color/colorTextPrimary"
-                        android:layout_marginBottom="10dp"/>
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tvAppVersion"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Версия: 1.0"
-                        android:textSize="16sp"
-                        android:textColor="@color/colorTextSecondary"/>
+                        android:text="Версия: 2.0"
+                        android:textColor="@color/colorTextSecondary"
+                        android:textSize="16sp" />
 
                     <!-- Дополнительная информация о приложении -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
                         android:text="SmartCook AI - ваше приложение для умной кухни"
-                        android:textSize="14sp"
                         android:textColor="@color/colorTextSecondary"
-                        android:layout_marginTop="8dp"/>
+                        android:textSize="14sp" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
+
+
+
 
         </LinearLayout>
 

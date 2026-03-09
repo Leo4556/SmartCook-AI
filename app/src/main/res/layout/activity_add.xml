@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_add"
@@ -11,250 +10,262 @@
     android:fitsSystemWindows="true"
     tools:context=".AddActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_margin="10dp"
-        android:orientation="vertical"
+        android:fillViewport="true"
         app:layout_constraintBottom_toTopOf="@id/bottomBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <!-- Название блюда -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            app:strokeWidth="0dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="10dp">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
-                    app:boxCornerRadiusBottomEnd="12dp"
-                    app:boxCornerRadiusBottomStart="12dp"
-                    app:boxCornerRadiusTopEnd="12dp"
-                    app:boxCornerRadiusTopStart="12dp"
-                    app:boxStrokeColor="@color/input_stroke_color"
-                    app:cursorColor="@color/colorTextPrimary"
-                    app:boxStrokeWidth="0.5dp"
-                    app:hintTextColor="@color/colorTextPrimary"
-                    app:startIconTint="@color/colorIconDefault">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etDishName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Название блюда"
-                        android:maxLines="1"
-                        android:inputType="text"
-                        android:textColor="@color/colorTextPrimary"
-                        android:textSize="16sp" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Секция фото -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="160dp"
-            android:layout_marginBottom="10dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp"
-            app:strokeWidth="0dp">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="12dp">
-
-                <ImageView
-                    android:id="@+id/ivDishPhoto"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:contentDescription="Фото блюда"
-                    android:scaleType="centerCrop"
-                    tools:src="@tools:sample/backgrounds/scenic" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnGallery"
-                        style="@style/Widget.Material3.Button.OutlinedButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Галерея"
-                        android:textColor="@color/colorTextPrimary"
-                        app:icon="@drawable/ic_gallery"
-                        app:iconGravity="textStart"
-                        app:iconPadding="8dp"
-                        app:iconTint="@color/colorTextPrimary"
-                        app:strokeColor="@color/input_stroke_color" />
-
-                </LinearLayout>
-
-            </RelativeLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Время приготовления -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            app:strokeWidth="0dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="10dp">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
-                    app:boxCornerRadiusBottomEnd="12dp"
-                    app:boxCornerRadiusBottomStart="12dp"
-                    app:boxCornerRadiusTopEnd="12dp"
-                    app:boxCornerRadiusTopStart="12dp"
-                    app:boxStrokeColor="@color/input_stroke_color"
-                    app:cursorColor="@color/colorTextPrimary"
-                    app:boxStrokeWidth="0.5dp"
-                    app:hintTextColor="@color/colorTextPrimary"
-                    app:startIconTint="@color/colorIconDefault">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edCookingTime"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Время приготовления (мин)"
-                        android:textColor="@color/colorTextPrimary"
-                        android:inputType="number"
-                        android:maxLines="1"
-                        android:textSize="16sp" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Переключатели фрагментов -->
-        <com.google.android.material.chip.ChipGroup
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="4dp"
-            app:selectionRequired="true"
-            app:singleSelection="true">
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipIngredients"
-                style="@style/Widget.Material3.Chip.Filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="Ингредиенты"
-                android:textColor="@color/colorTextPrimary"
-                app:chipBackgroundColor="@color/chip_background_selector"
-                app:checkedIconVisible="false" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipDescription"
-                style="@style/Widget.Material3.Chip.Filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Описание"
-                android:textColor="@color/colorTextPrimary"
-                app:chipBackgroundColor="@color/chip_background_selector"
-                app:checkedIconVisible="false" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipAI"
-                style="@style/Widget.Material3.Chip.Filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Анализ"
-                android:textColor="@color/colorTextPrimary"
-                app:chipIcon="@drawable/ic_ai"
-                app:chipIconSize="28dp"
-                app:chipIconTint="@color/white"
-                app:chipIconVisible="true"
-                app:chipBackgroundColor="@color/colorAccentDark"
-                app:chipStrokeWidth="0.5dp"
-                app:chipStrokeColor="@color/input_stroke_color"
-                app:checkedIconVisible="false" />
-
-        </com.google.android.material.chip.ChipGroup>
-
-        <ScrollView
-            android:id="@+id/scrollView"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:fillViewport="true"
-            android:scrollbars="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <FrameLayout
-                    android:id="@+id/addFragmentContainer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="160dp" />
-
-            </LinearLayout>
-        </ScrollView>
-
-        <!-- Кнопки действий -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_height="0dp"
+            android:layout_margin="10dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@id/bottomBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnCancel"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="0dp"
+            <!-- Название блюда -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_weight="1"
-                android:text="Отмена"
-                android:textColor="@color/colorTextPrimary"
-                app:strokeColor="@color/input_stroke_color" />
+                android:layout_marginBottom="10dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:strokeWidth="0dp">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnSave"
-                style="@style/Widget.Material3.Button"
-                android:layout_width="0dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="6dp"
+                        app:boxCornerRadiusBottomEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusTopStart="12dp"
+                        app:boxStrokeColor="@color/input_stroke_color"
+                        app:boxStrokeWidth="0.5dp"
+                        app:cursorColor="@color/colorTextPrimary"
+                        app:hintTextColor="@color/colorTextPrimary"
+                        app:startIconTint="@color/colorIconDefault">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etDishName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Название блюда"
+                            android:inputType="text"
+                            android:maxLines="1"
+                            android:textColor="@color/colorTextPrimary"
+                            android:textSize="16sp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Секция фото -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:layout_marginBottom="10dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                app:strokeWidth="0dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="12dp">
+
+                    <ImageView
+                        android:id="@+id/ivDishPhoto"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="Фото блюда"
+                        android:scaleType="centerCrop"
+                        tools:src="@tools:sample/backgrounds/scenic" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnGallery"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Галерея"
+                            android:textColor="@color/colorTextPrimary"
+                            app:icon="@drawable/ic_gallery"
+                            app:iconGravity="textStart"
+                            app:iconPadding="8dp"
+                            app:iconTint="@color/colorTextPrimary"
+                            app:strokeColor="@color/input_stroke_color" />
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Время приготовления -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:backgroundTint="@color/colorAccentDark"
-                android:text="Сохранить"
-                android:textColor="@color/colorTextPrimary" />
+                android:layout_marginBottom="10dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="6dp"
+                        app:boxCornerRadiusBottomEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusTopStart="12dp"
+                        app:boxStrokeColor="@color/input_stroke_color"
+                        app:boxStrokeWidth="0.5dp"
+                        app:cursorColor="@color/colorTextPrimary"
+                        app:hintTextColor="@color/colorTextPrimary"
+                        app:startIconTint="@color/colorIconDefault">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edCookingTime"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Время приготовления (мин)"
+                            android:inputType="number"
+                            android:maxLines="1"
+                            android:textColor="@color/colorTextPrimary"
+                            android:textSize="16sp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Переключатели фрагментов -->
+            <com.google.android.material.chip.ChipGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="4dp"
+                app:selectionRequired="true"
+                app:singleSelection="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipIngredients"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="Ингредиенты"
+                    android:textColor="@color/colorTextPrimary"
+                    app:checkedIconVisible="false"
+                    app:chipBackgroundColor="@color/chip_background_selector" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipDescription"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Описание"
+                    android:textColor="@color/colorTextPrimary"
+                    app:checkedIconVisible="false"
+                    app:chipBackgroundColor="@color/chip_background_selector" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipAI"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Анализ"
+                    android:textColor="@color/colorTextPrimary"
+                    app:checkedIconVisible="false"
+                    app:chipBackgroundColor="@color/colorAccentDark"
+                    app:chipIcon="@drawable/ic_ai"
+                    app:chipIconSize="28dp"
+                    app:chipIconTint="@color/white"
+                    app:chipIconVisible="true"
+                    app:chipStrokeColor="@color/input_stroke_color"
+                    app:chipStrokeWidth="0.5dp" />
+
+            </com.google.android.material.chip.ChipGroup>
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/scrollView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fillViewport="true"
+                android:scrollbars="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <FrameLayout
+                        android:id="@+id/addFragmentContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="160dp" />
+
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
+
+            <!-- Кнопки действий -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCancel"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:rippleColor="@color/colorAccentLight"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:text="Отмена"
+                    android:textColor="@color/colorTextPrimary"
+                    app:strokeColor="@color/input_stroke_color" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSave"
+                    style="@style/Widget.Material3.Button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorAccentDark"
+                    android:text="Сохранить"
+                    android:textColor="@color/colorTextPrimary" />
+            </LinearLayout>
+
         </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
-    </LinearLayout>
 
     <!-- Нижнее меню -->
     <include

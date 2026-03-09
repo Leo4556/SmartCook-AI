@@ -6,10 +6,12 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [RecipeEntity::class],
-    version = 1,
-    exportSchema = false
+    entities = [
+        RecipeEntity::class,
+    ],
+    version = 3
 )
+
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun recipeDao(): RecipeDao

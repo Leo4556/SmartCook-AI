@@ -1,77 +1,184 @@
 package com.example.smartcookai
 
+import android.app.Application
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.room.Dao
+import com.example.smartcookai.data.AppDatabase
+import com.example.smartcookai.data.RecipeRepository
 import com.example.smartcookai.databinding.ActivitySettingsBinding
+import com.example.smartcookai.viewmodel.RecipeViewModel
+import com.example.smartcookai.viewmodel.RecipeViewModelFactory
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.switchmaterial.SwitchMaterial
 import kotlinx.coroutines.launch
 
-class SettingsActivity : AppCompatActivity() {
+class SmartCookApp : Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+
+        val prefs = getSharedPreferences("theme_prefs", MODE_PRIVATE)
+        val savedTheme = prefs.getInt(
+            "theme_mode",
+            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        )
+
+        AppCompatDelegate.setDefaultNightMode(savedTheme)
+    }
+}
+
+class SettingsActivity : BaseActivity() {
 
     private lateinit var binding: ActivitySettingsBinding
+    private lateinit var repository: RecipeRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setupBottomNavigation()
+        val dao = AppDatabase.getInstance(this).recipeDao()
+        repository = RecipeRepository(dao)
+
         setupThemeSwitch()
+        setupClearFavorites()
+        deleteAllRecipes()
+        setupBottomNavigation()
     }
 
-//    private fun applySavedTheme() {
-//        val themePrefs = getSharedPreferences("theme_prefs", MODE_PRIVATE)
-//        val savedTheme = themePrefs.getInt("theme_mode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-//
-//        when (savedTheme) {
-//            AppCompatDelegate.MODE_NIGHT_NO -> {
-//                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-//            }
-//            AppCompatDelegate.MODE_NIGHT_YES -> {
-//                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-//            }
-//            else -> {
-//                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-//            }
-//        }
-//    }
-
     private fun setupThemeSwitch() {
-        val switchTheme = findViewById<SwitchMaterial>(R.id.switchTheme)
 
         val themePrefs = getSharedPreferences("theme_prefs", MODE_PRIVATE)
-        val savedTheme = themePrefs.getInt("theme_mode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
 
+        val savedTheme = themePrefs.getInt(
+            "theme_mode",
+            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        )
+
+        // Выставляем активную кнопку
         when (savedTheme) {
-            AppCompatDelegate.MODE_NIGHT_YES -> switchTheme.isChecked = true
-            AppCompatDelegate.MODE_NIGHT_NO -> switchTheme.isChecked = false
-            else -> {
-                // Для системной темы проверяем текущий режим системы
-                val currentNightMode = resources.configuration.uiMode and
-                        android.content.res.Configuration.UI_MODE_NIGHT_MASK
-                switchTheme.isChecked = currentNightMode ==
-                        android.content.res.Configuration.UI_MODE_NIGHT_YES
-            }
+            AppCompatDelegate.MODE_NIGHT_NO ->
+                binding.themeToggle.check(R.id.radioLight)
+
+            AppCompatDelegate.MODE_NIGHT_YES ->
+                binding.themeToggle.check(R.id.radioDark)
+
+            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM ->
+                binding.themeToggle.check(R.id.radioSystem)
         }
 
-        switchTheme.setOnCheckedChangeListener { _, isChecked ->
-            lifecycleScope.launch {
-                val themeMode = if (isChecked) {
-                    AppCompatDelegate.MODE_NIGHT_YES
-                } else {
+        binding.themeToggle.setOnCheckedChangeListener { _, checkedId ->
+
+            val themeMode = when (checkedId) {
+
+                R.id.radioLight ->
                     AppCompatDelegate.MODE_NIGHT_NO
+
+                R.id.radioDark ->
+                    AppCompatDelegate.MODE_NIGHT_YES
+
+                else ->
+                    AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            }
+
+            themePrefs.edit()
+                .putInt("theme_mode", themeMode)
+                .apply()
+
+            AppCompatDelegate.setDefaultNightMode(themeMode)
+        }
+    }
+
+    private fun setupClearFavorites() {
+
+        binding.btnClearFavorites.setOnClickListener {
+
+            val dialog = MaterialAlertDialogBuilder(this)
+                .setTitle("Очистить избранное")
+                .setMessage("Удалить все рецепты из избранного?")
+                .setPositiveButton("Очистить") { _, _ ->
+
+                    lifecycleScope.launch {
+                        repository.clearFavorites()
+
+                        Toast.makeText(
+                            this@SettingsActivity,
+                            "Избранное очищено",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
                 }
 
-                themePrefs.edit().putInt("theme_mode", themeMode).apply()
+                .setNegativeButton("Отмена", null)
+                .show()
+            dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE)
+                .setTextColor(ContextCompat.getColor(this, R.color.colorAccentDark))
 
-                // Применяем тему
-                AppCompatDelegate.setDefaultNightMode(themeMode)
-
-                recreate()
-            }
+            dialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE)
+                .setTextColor(ContextCompat.getColor(this, R.color.colorAccentDark))
         }
+    }
+
+    private fun deleteAllRecipes() {
+        binding.btnDeleteAllRecipes.setOnClickListener {
+
+            val dialog = MaterialAlertDialogBuilder(this)
+                .setTitle("Удалить все рецепты")
+                .setMessage("Вы уверены? Это действие нельзя отменить.")
+                .setPositiveButton("Удалить") { _, _ ->
+
+                    lifecycleScope.launch {
+                        repository.deleteAllRecipes()
+                        showDeleteAllSnackbar()
+                    }
+                }
+                .setNegativeButton("Отмена", null)
+                .show()
+
+
+            dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE)
+                .setTextColor(ContextCompat.getColor(this, R.color.colorAccentDark))
+
+            dialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE)
+                .setTextColor(ContextCompat.getColor(this, R.color.colorAccentDark))
+
+
+        }
+    }
+
+    private fun showDeleteAllSnackbar() {
+
+        val snackbar = Snackbar.make(
+            binding.root,
+            "Все рецепты удалены",
+            Snackbar.LENGTH_LONG
+        )
+
+        snackbar.anchorView = binding.bottomBar.bottomBar
+
+        val snackbarView = snackbar.view
+        val params = snackbarView.layoutParams as? CoordinatorLayout.LayoutParams
+
+        params?.apply {
+            marginStart = 16
+            marginEnd = 16
+            bottomMargin = 16
+        }
+
+        snackbar.show()
     }
 
     private fun setupBottomNavigation() {

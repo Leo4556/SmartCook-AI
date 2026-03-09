@@ -18,9 +18,18 @@ interface RecipeDao {
     @Query("SELECT * FROM recipes ORDER BY id DESC")
     fun getAllRecipes(): LiveData<List<RecipeEntity>>
 
-    @Query("SELECT * FROM recipes WHERE id = :id LIMIT 1")
-    suspend fun getRecipeById(id: Int): RecipeEntity?
-
     @Query("SELECT * FROM recipes WHERE isFavorite = 1 ORDER BY id DESC")
     fun getFavourites(): LiveData<List<RecipeEntity>>
+
+    @Query("SELECT * FROM recipes WHERE isFavorite = 1 AND title LIKE '%' || :query || '%' ORDER BY id DESC")
+    fun searchFavourites(query: String): LiveData<List<RecipeEntity>>
+
+    @Query("SELECT * FROM recipes WHERE id = :id LIMIT 1")
+    fun getRecipeByIdLive(id: Int): LiveData<RecipeEntity>
+
+    @Query("UPDATE recipes SET isFavorite = 0")
+    suspend fun clearAllFavorites()
+
+    @Query("DELETE FROM recipes ")
+    suspend fun deleteAllRecipes()
 }

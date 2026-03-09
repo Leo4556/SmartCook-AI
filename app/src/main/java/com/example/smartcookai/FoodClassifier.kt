@@ -15,7 +15,7 @@ class FoodClassifier(context: Context) {
     companion object {
         private const val MODEL_FILE = "1.tflite"
         private const val LABELS_FILE = "labels.txt"
-        private const val INGREDIENTS_FILE = "ingredients.json"
+        private const val METADATA_FILE = "food_metadata.json"
 
         private const val DEFAULT_IMAGE_SIZE = 224
         private const val IMAGE_CHANNELS = 3
@@ -23,7 +23,7 @@ class FoodClassifier(context: Context) {
 
     private var interpreter: Interpreter? = null
     private val labels: List<String>
-    private val ingredientsMap: Map<String, List<String>>
+    private val metadataMap: Map<String, FoodMetadata>
 
     private var imageSize = DEFAULT_IMAGE_SIZE
     private var isQuantized = false
@@ -33,7 +33,7 @@ class FoodClassifier(context: Context) {
         interpreter = loadModel(context)
         determineModelParameters()
         labels = loadLabels(context)
-        ingredientsMap = loadIngredients(context)
+        metadataMap = loadMetadata(context)
     }
 
     // ===================== MODEL =====================
@@ -87,10 +87,13 @@ class FoodClassifier(context: Context) {
 
     // ===================== INGREDIENTS =====================
 
-    private fun loadIngredients(context: Context): Map<String, List<String>> {
+    private fun loadMetadata(context: Context): Map<String, FoodMetadata> {
         return try {
-            val reader = InputStreamReader(context.assets.open(INGREDIENTS_FILE), "UTF-8")
-            val type = object : TypeToken<Map<String, List<String>>>() {}.type
+            val reader = InputStreamReader(
+                context.assets.open(METADATA_FILE),
+                "UTF-8"
+            )
+            val type = object : TypeToken<Map<String, FoodMetadata>>() {}.type
             Gson().fromJson(reader, type)
         } catch (e: Exception) {
             emptyMap()
@@ -99,7 +102,7 @@ class FoodClassifier(context: Context) {
 
     // ===================== ANALYZE =====================
 
-    fun analyzeFood(bitmap: Bitmap): FoodResult? {
+    fun analyzeFood(bitmap: Bitmap): FoodMetadata? {
         if (interpreter == null || labels.isEmpty()) return null
 
         val inputBuffer = prepareImageInput(bitmap)
@@ -126,30 +129,33 @@ class FoodClassifier(context: Context) {
         if (labelIndex !in labels.indices) return null
 
         val foodName = labels[labelIndex]
-        val ingredients = findIngredients(foodName)
+        val metadata = findMetadata(foodName)
 
-        return FoodResult(
-            foodName = foodName,
+        return FoodMetadata(
             confidence = bestScore,
-            ingredients = ingredients
+            foodName = foodName,
+            ingredients = metadata?.ingredients ?: emptyList(),
+            cookingTime = metadata?.cookingTime ?: 0,
+            description = metadata?.description ?: ""
         )
     }
 
     // ===================== INGREDIENT MATCH =====================
 
-    private fun findIngredients(foodName: String): List<String> {
-        ingredientsMap[foodName]?.let { return it }
+    private fun findMetadata(foodName: String): FoodMetadata? {
 
-        ingredientsMap.entries.firstOrNull {
+        metadataMap[foodName]?.let { return it }
+
+        metadataMap.entries.firstOrNull {
             it.key.equals(foodName, ignoreCase = true)
         }?.let { return it.value }
 
-        ingredientsMap.entries.firstOrNull {
+        metadataMap.entries.firstOrNull {
             it.key.lowercase().contains(foodName.lowercase()) ||
                     foodName.lowercase().contains(it.key.lowercase())
         }?.let { return it.value }
 
-        return emptyList()
+        return null
     }
 
     // ===================== MODEL RUN =====================
@@ -205,9 +211,11 @@ class FoodClassifier(context: Context) {
         interpreter = null
     }
 
-    data class FoodResult(
+    data class FoodMetadata(
         val foodName: String,
         val confidence: Float,
-        val ingredients: List<String>
+        val ingredients: List<String>,
+        val cookingTime: Int,
+        val description: String
     )
 }
