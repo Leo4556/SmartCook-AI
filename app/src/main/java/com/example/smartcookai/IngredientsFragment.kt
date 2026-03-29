@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.smartcookai.databinding.FragmentIngredientsBinding
@@ -30,16 +31,14 @@ class IngredientsFragment : Fragment() {
 
         // Подписываемся на изменения ингредиентов
         sharedViewModel.ingredientsLiveData.observe(viewLifecycleOwner) { ingredients ->
-            if (ingredients.isNotEmpty()) {
+            if (binding.etIngredients.text.toString() != ingredients) {
                 binding.etIngredients.setText(ingredients)
             }
         }
 
         // Сохраняем изменения ингредиентов
-        binding.etIngredients.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                sharedViewModel.ingredients = binding.etIngredients.text.toString()
-            }
+        binding.etIngredients.addTextChangedListener {
+            sharedViewModel.ingredients = it.toString()
         }
     }
 

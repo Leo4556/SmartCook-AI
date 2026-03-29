@@ -28,15 +28,13 @@ class DescriptionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         sharedViewModel.descriptionLiveData.observe(viewLifecycleOwner) { description ->
-            if (description.isNotEmpty()) {
+            if (binding.etRecipeDescription.text.toString() != description) {
                 binding.etRecipeDescription.setText(description)
             }
         }
 
-        binding.etRecipeDescription.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                sharedViewModel.description = binding.etRecipeDescription.text.toString()
-            }
+        binding.etRecipeDescription.addTextChangedListener {
+            sharedViewModel.description = it.toString()
         }
 
     }
