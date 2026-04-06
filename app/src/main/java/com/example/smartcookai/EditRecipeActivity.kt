@@ -84,7 +84,9 @@ class EditRecipeActivity : BaseActivity() {
             sharedViewModel.description = recipe.description
 
             recipe.imagePath?.let {
-                binding.ivDishPhoto.setImageURI(Uri.fromFile(File(it)))
+                val imageUri = Uri.fromFile(File(it))
+                selectedImageUri = imageUri
+                binding.ivDishPhoto.setImageURI(imageUri)
             }
         }
     }
@@ -153,15 +155,24 @@ class EditRecipeActivity : BaseActivity() {
 
         sharedViewModel.ingredients = ingredientsText
 
+        val descriptionText = result.description.ifBlank {
+            "Описание для '${result.foodName}' не найдено. Добавьте вручную."
+        }
+        sharedViewModel.description = descriptionText
+
         if (ingredientsFragment.isAdded) {
             ingredientsFragment.updateIngredients(ingredientsText)
+        }
+
+        if (descriptionFragment.isAdded) {
+            descriptionFragment.updateDescription(descriptionText)
         }
 
         replaceFragment(ingredientsFragment)
         binding.chipIngredients.isChecked = true
 
         val message = if (result.ingredients.isNotEmpty()) {
-            "✅ ${result.foodName}\nИнгредиенты добавлены"
+            "✅ ${result.foodName}\nИнгредиенты и описание добавлены"
         } else {
             "✅ ${result.foodName}\n⚠️ Ингредиенты не найдены"
         }

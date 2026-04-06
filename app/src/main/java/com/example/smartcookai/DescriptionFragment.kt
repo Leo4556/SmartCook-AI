@@ -39,6 +39,11 @@ class DescriptionFragment : Fragment() {
 
     }
 
+    fun updateDescription(description: String) {
+        binding.etRecipeDescription.setText(description)
+        sharedViewModel.description = description
+    }
+
     fun getDescription(): String {
         return binding.etRecipeDescription.text.toString()
     }
