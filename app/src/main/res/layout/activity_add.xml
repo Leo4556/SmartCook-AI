@@ -248,7 +248,7 @@
                     app:rippleColor="@color/colorAccentLight"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="1"
-                    android:text="Отмена"
+                    android:text="Очистить"
                     android:textColor="@color/colorTextPrimary"
                     app:strokeColor="@color/input_stroke_color" />
 
