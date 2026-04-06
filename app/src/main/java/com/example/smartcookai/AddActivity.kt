@@ -31,8 +31,7 @@ class AddActivity : BaseActivity() {
     private val sharedViewModel: AddRecipeSharedViewModel by viewModels()
     private lateinit var binding: ActivityAddBinding
     private lateinit var foodClassifier: FoodClassifier
-    private val ingredientsFragment = IngredientsFragment()
-    private val descriptionFragment = DescriptionFragment()
+    private var currentTab = "ingredients"
 
     private lateinit var viewModel: RecipeViewModel
     private var selectedImageUri: Uri? = null
@@ -69,11 +68,11 @@ class AddActivity : BaseActivity() {
 
     private fun setupUI() {
         binding.chipIngredients.setOnClickListener {
-            replaceFragment(ingredientsFragment)
+            replaceFragment(IngredientsFragment())
         }
 
         binding.chipDescription.setOnClickListener {
-            replaceFragment(descriptionFragment)
+            replaceFragment(DescriptionFragment())
         }
 
         binding.chipAI.setOnClickListener {
@@ -93,7 +92,7 @@ class AddActivity : BaseActivity() {
             Toast.makeText(this, "Форма очищена", Toast.LENGTH_SHORT).show()
         }
 
-        replaceFragment(ingredientsFragment)
+        replaceFragment(IngredientsFragment())
     }
 
     private fun analyzePhotoWithAI() {
@@ -128,12 +127,13 @@ class AddActivity : BaseActivity() {
         sharedViewModel.ingredients = ingredientsText
         sharedViewModel.description = result.description
 
-        if (ingredientsFragment.isAdded) {
-            ingredientsFragment.updateIngredients(ingredientsText)
+        if (IngredientsFragment().isAdded) {
+            IngredientsFragment().updateIngredients(ingredientsText)
         }
 
-        replaceFragment(ingredientsFragment)
+        currentTab = "ingredients"
         binding.chipIngredients.isChecked = true
+        replaceFragment(IngredientsFragment())
 
         val message = if (result.ingredients.isNotEmpty()) {
             "✅ ${result.foodName}\nИнгредиенты добавлены"
@@ -141,7 +141,7 @@ class AddActivity : BaseActivity() {
             "✅ ${result.foodName}\n⚠️ Ингредиенты не найдены"
         }
 
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun getBitmapFromUri(context: Context, uri: Uri): Bitmap? {
@@ -181,6 +181,16 @@ class AddActivity : BaseActivity() {
         selectedImageUri = null
         binding.ivDishPhoto.setImageResource(R.drawable.ic_gallery)
         sharedViewModel.clearData()
+
+        if (currentTab == "ingredients") {
+            replaceFragment(IngredientsFragment())
+            binding.chipIngredients.isChecked = true
+        } else {
+            replaceFragment(DescriptionFragment())
+            binding.chipDescription.isChecked = true
+        }
+
+        Toast.makeText(this, "Форма очищена", Toast.LENGTH_SHORT).show()
     }
 
     private fun saveRecipeToDatabase() {

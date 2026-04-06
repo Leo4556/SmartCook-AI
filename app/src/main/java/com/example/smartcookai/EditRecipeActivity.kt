@@ -42,16 +42,16 @@ class EditRecipeActivity : BaseActivity() {
 
     private val sharedViewModel: AddRecipeSharedViewModel by viewModels()
     private lateinit var foodClassifier: FoodClassifier
-    private val ingredientsFragment = IngredientsFragment()
-    private val descriptionFragment = DescriptionFragment()
+    private var currentTab = "ingredients"
 
     private lateinit var viewModel: RecipeViewModel
-    private var selectedImageUri: Uri? = null
+    private var currentImageUri: Uri? = null
+    private var newSelectedImageUri: Uri? = null
 
     private val pickImageLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             uri?.let {
-                selectedImageUri = it
+                newSelectedImageUri = it
                 binding.ivDishPhoto.setImageURI(it)
             }
         }
@@ -85,7 +85,7 @@ class EditRecipeActivity : BaseActivity() {
 
             recipe.imagePath?.let {
                 val imageUri = Uri.fromFile(File(it))
-                selectedImageUri = imageUri
+                currentImageUri = imageUri
                 binding.ivDishPhoto.setImageURI(imageUri)
             }
         }
@@ -98,11 +98,13 @@ class EditRecipeActivity : BaseActivity() {
 
     private fun setupUI() {
         binding.chipIngredients.setOnClickListener {
-            replaceFragment(ingredientsFragment)
+            currentTab = "ingredients"
+            replaceFragment(IngredientsFragment())
         }
 
         binding.chipDescription.setOnClickListener {
-            replaceFragment(descriptionFragment)
+            currentTab = "description"
+            replaceFragment(DescriptionFragment())
         }
 
         binding.chipAI.setOnClickListener {
@@ -122,11 +124,12 @@ class EditRecipeActivity : BaseActivity() {
             Toast.makeText(this, "Форма очищена", Toast.LENGTH_SHORT).show()
         }
 
-        replaceFragment(ingredientsFragment)
+        currentTab = "ingredients"
+        replaceFragment(IngredientsFragment())
     }
 
     private fun analyzePhotoWithAI() {
-        val uri = selectedImageUri
+        val uri = newSelectedImageUri ?: currentImageUri
         if (uri == null) {
             Toast.makeText(this, "❌ Сначала выберите фото", Toast.LENGTH_SHORT).show()
             return
@@ -146,6 +149,7 @@ class EditRecipeActivity : BaseActivity() {
         }
 
         binding.etDishName.setText(result.foodName)
+        binding.edCookingTime.setText(result.cookingTime.toString())
 
         val ingredientsText = if (result.ingredients.isNotEmpty()) {
             result.ingredients.joinToString("\n") { "• $it" }
@@ -154,30 +158,23 @@ class EditRecipeActivity : BaseActivity() {
         }
 
         sharedViewModel.ingredients = ingredientsText
+        sharedViewModel.description = result.description
 
-        val descriptionText = result.description.ifBlank {
-            "Описание для '${result.foodName}' не найдено. Добавьте вручную."
-        }
-        sharedViewModel.description = descriptionText
-
-        if (ingredientsFragment.isAdded) {
-            ingredientsFragment.updateIngredients(ingredientsText)
+        if (IngredientsFragment().isAdded) {
+            IngredientsFragment().updateIngredients(ingredientsText)
         }
 
-        if (descriptionFragment.isAdded) {
-            descriptionFragment.updateDescription(descriptionText)
-        }
-
-        replaceFragment(ingredientsFragment)
+        currentTab = "ingredients"
         binding.chipIngredients.isChecked = true
+        replaceFragment(IngredientsFragment())
 
         val message = if (result.ingredients.isNotEmpty()) {
-            "✅ ${result.foodName}\nИнгредиенты и описание добавлены"
+            "✅ ${result.foodName}\nИнгредиенты добавлены"
         } else {
             "✅ ${result.foodName}\n⚠️ Ингредиенты не найдены"
         }
 
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun getBitmapFromUri(context: Context, uri: Uri): Bitmap? {
@@ -214,9 +211,19 @@ class EditRecipeActivity : BaseActivity() {
     private fun clearForm() {
         binding.etDishName.text?.clear()
         binding.edCookingTime.text?.clear()
-        selectedImageUri = null
+        currentImageUri = null
         binding.ivDishPhoto.setImageResource(R.drawable.ic_gallery)
         sharedViewModel.clearData()
+
+        if (currentTab == "ingredients") {
+            replaceFragment(IngredientsFragment())
+            binding.chipIngredients.isChecked = true
+        } else {
+            replaceFragment(DescriptionFragment())
+            binding.chipDescription.isChecked = true
+        }
+
+        Toast.makeText(this, "Форма очищена", Toast.LENGTH_SHORT).show()
     }
 
     private fun saveRecipeToDatabase() {
@@ -237,8 +244,8 @@ class EditRecipeActivity : BaseActivity() {
                 calculateNutritionFromText(ingredients)
 
             // если фото новое — сохраняем, иначе оставляем старый путь
-            val imagePath = if (selectedImageUri != null) {
-                saveImageToInternalStorage(selectedImageUri!!)
+            val imagePath = if (newSelectedImageUri != null) {
+                saveImageToInternalStorage(newSelectedImageUri!!)
             } else {
                 currentRecipe?.imagePath
             }
