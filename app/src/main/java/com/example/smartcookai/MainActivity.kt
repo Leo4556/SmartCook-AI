@@ -169,29 +169,41 @@ class MainActivity : BaseActivity() {
     }
 
     private fun applySearch(query: String) {
-
         val filteredRecipes = if (query.isNotBlank()) {
+            val normalizedQuery = query.lowercase().trim()
 
-            val words = query
-                .lowercase()
-                .trim()
-                .split("\\s+".toRegex())
+            if (normalizedQuery.contains(",")) {
+                // Поиск по ингредиентам через запятую
+                val ingredientsQuery = normalizedQuery
+                    .split(",")
+                    .map { it.trim() }
+                    .filter { it.isNotEmpty() }
 
-            allRecipes.filter { recipe ->
+                allRecipes.filter { recipe ->
+                    val recipeIngredients = recipe.ingredients.lowercase()
 
-                val text = (
-                        recipe.title +
-                                " " +
-                                recipe.ingredients +
-                                " " +
-                                recipe.description
-                        ).lowercase()
+                    ingredientsQuery.all { ingredient ->
+                        recipeIngredients.contains(ingredient)
+                    }
+                }
+            } else {
+                // Обычный поиск по названию, описанию и ингредиентам
+                val words = normalizedQuery
+                    .split("\\s+".toRegex())
+                    .filter { it.isNotEmpty() }
 
-                words.all { word ->
-                    text.contains(word)
+                allRecipes.filter { recipe ->
+                    val text = (
+                            recipe.title + " " +
+                                    recipe.ingredients + " " +
+                                    recipe.description
+                            ).lowercase()
+
+                    words.all { word ->
+                        text.contains(word)
+                    }
                 }
             }
-
         } else {
             allRecipes
         }
