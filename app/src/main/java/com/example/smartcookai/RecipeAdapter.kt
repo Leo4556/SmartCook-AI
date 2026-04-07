@@ -2,7 +2,6 @@ package com.example.smartcookai
 
 import android.graphics.BitmapFactory
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -15,9 +14,8 @@ class RecipeAdapter(
     private val onFavoriteClick: (RecipeEntity) -> Unit = {}
 ) : RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder>() {
 
-    // Переменная для предотвращения двойных кликов
     private var lastClickTime: Long = 0
-    private val CLICK_DELAY = 200L // 0.5 секунды между кликами
+    private val CLICK_DELAY = 200L
 
     inner class RecipeViewHolder(val binding: ItemRecipeBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -25,9 +23,8 @@ class RecipeAdapter(
         fun bind(recipe: RecipeEntity) {
             binding.apply {
                 tvRecipeName.text = recipe.title
-                tvRecipeTime.text = "${recipe.cookingTime} мин"
+                tvRecipeTime.text = "${recipe.cookingTime} мин • ${getServingsText(recipe.servings)}"
 
-                // Избранное с кастомными цветами
                 if (recipe.isFavorite) {
                     btnFav.setImageResource(R.drawable.ic_bookmark_filled)
                     btnFav.contentDescription = "В избранном"
@@ -37,13 +34,11 @@ class RecipeAdapter(
                 } else {
                     btnFav.setImageResource(R.drawable.ic_bookmark)
                     btnFav.contentDescription = "Добавить в избранное"
-                    // Используем ваш вторичный цвет текста
                     btnFav.setColorFilter(
                         ContextCompat.getColor(itemView.context, R.color.colorTextSecondary)
                     )
                 }
 
-                // Обработка клика на закладку
                 btnFav.setOnClickListener {
                     val currentTime = System.currentTimeMillis()
                     if (currentTime - lastClickTime > CLICK_DELAY) {
@@ -52,12 +47,10 @@ class RecipeAdapter(
                     }
                 }
 
-                // Клик на всю карточку
                 root.setOnClickListener {
                     onItemClick(recipe)
                 }
 
-                // Загрузка изображения
                 if (!recipe.imagePath.isNullOrEmpty()) {
                     ivRecipeImage.setImageBitmap(BitmapFactory.decodeFile(recipe.imagePath))
                 } else {
@@ -84,5 +77,13 @@ class RecipeAdapter(
     fun updateList(newList: List<RecipeEntity>) {
         items = newList
         notifyDataSetChanged()
+    }
+
+    private fun getServingsText(servings: Int): String {
+        return when {
+            servings % 10 == 1 && servings % 100 != 11 -> "$servings порция"
+            servings % 10 in 2..4 && servings % 100 !in 12..14 -> "$servings порции"
+            else -> "$servings порций"
+        }
     }
 }
