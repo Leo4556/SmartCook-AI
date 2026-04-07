@@ -67,11 +67,21 @@ class RecipeDetailsActivity : BaseActivity() {
             binding.tvTime.text = "${recipe.cookingTime} мин"
             binding.tvIngredients.text = recipe.ingredients
             binding.tvDescription.text = recipe.description
-            binding.tvCalories.text = "${recipe.totalKcal.toInt()} ккал"
-            binding.tvProtein.text = "Белки: ${recipe.totalProtein.toInt()} г"
-            binding.tvFat.text = "Жиры: ${recipe.totalFat.toInt()} г"
-            binding.tvCarbs.text = "Углеводы: ${recipe.totalCarbs.toInt()} г"
 
+            val servings = recipe.servings.coerceAtLeast(1)
+
+            val kcalPerServing = recipe.totalKcal / servings
+            val proteinPerServing = recipe.totalProtein / servings
+            val fatPerServing = recipe.totalFat / servings
+            val carbsPerServing = recipe.totalCarbs / servings
+
+            binding.tvServings.text = "Порций: $servings"
+
+            binding.tvNutritionPerServing.text =
+                "${kcalPerServing.toInt()} ккал | Б ${proteinPerServing.toInt()} г | Ж ${fatPerServing.toInt()} г | У ${carbsPerServing.toInt()} г"
+
+            binding.tvNutritionTotal.text =
+                "Всего: ${recipe.totalKcal.toInt()} ккал | Б ${recipe.totalProtein.toInt()} г | Ж ${recipe.totalFat.toInt()} г | У ${recipe.totalCarbs.toInt()} г"
 
             if (!recipe.imagePath.isNullOrEmpty()) {
                 val bitmap = BitmapFactory.decodeFile(recipe.imagePath)

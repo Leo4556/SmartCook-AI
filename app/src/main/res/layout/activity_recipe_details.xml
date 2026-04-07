@@ -75,14 +75,13 @@
                         android:textSize="16sp" />
 
                     <TextView
-                        android:id="@+id/tvCalories"
+                        android:id="@+id/tvServings"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
-                        android:text="350 ккал"
+                        android:text="Порций: 1"
                         android:textColor="?android:attr/textColorSecondary"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textSize="16sp" />
 
 
                 </LinearLayout>
@@ -107,35 +106,29 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Информация"
+                        android:text="Пищевая ценность"
                         android:textColor="?android:attr/textColorPrimary"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/tvProtein"
+                        android:id="@+id/tvNutritionPerServing"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="— Белки —"
-                        android:textColor="?android:attr/textColorSecondary"
-                        android:textSize="16sp" />
+                        android:text="320 ккал | Б 12 г | Ж 8 г | У 25 г"
+                        android:textColor="?android:attr/textColorPrimary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/tvFat"
+                        android:id="@+id/tvNutritionTotal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="— Жиры —"
+                        android:layout_marginTop="6dp"
+                        android:text="Всего: 1280 ккал | Б 48 г | Ж 32 г | У 100 г"
                         android:textColor="?android:attr/textColorSecondary"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        android:id="@+id/tvCarbs"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="— Углеводы —"
-                        android:textColor="?android:attr/textColorSecondary"
-                        android:textSize="16sp" />
+                        android:textSize="14sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
