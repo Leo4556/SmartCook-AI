@@ -59,6 +59,10 @@ class AddActivity : BaseActivity() {
 
         setupUI()
         setupBottomNavigation()
+
+        if (binding.edServings.text.isNullOrBlank()) {
+            binding.edServings.setText("1")
+        }
     }
 
     override fun onDestroy() {
@@ -117,6 +121,10 @@ class AddActivity : BaseActivity() {
 
         binding.etDishName.setText(result.foodName)
         binding.edCookingTime.setText(result.cookingTime.toString())
+
+        if (binding.edServings.text.isNullOrBlank()) {
+            binding.edServings.setText("1")
+        }
 
         val ingredientsText = if (result.ingredients.isNotEmpty()) {
             result.ingredients.joinToString("\n") { "• $it" }
@@ -199,6 +207,7 @@ class AddActivity : BaseActivity() {
         val description = sharedViewModel.description.trim()
         val cookingTime = binding.edCookingTime.text.toString().toIntOrNull() ?: 0
         val imagePath = selectedImageUri?.let { saveImageToInternalStorage(it) }
+        val servings = binding.edServings.text.toString().toIntOrNull()?.coerceAtLeast(1) ?: 1
 
         if (title.isEmpty() || ingredients.isEmpty() || description.isEmpty()) {
             Toast.makeText(this, "❌ Заполните все поля", Toast.LENGTH_SHORT).show()
@@ -216,6 +225,8 @@ class AddActivity : BaseActivity() {
                 description = description,
                 cookingTime = cookingTime,
                 imagePath = imagePath,
+
+                servings = servings,
 
                 totalKcal = kcal,
                 totalProtein = protein,
