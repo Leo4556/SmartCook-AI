@@ -13,6 +13,10 @@ import com.example.smartcookai.data.AppDatabase
 import com.example.smartcookai.data.RecipeEntity
 import com.example.smartcookai.data.RecipeRepository
 import com.example.smartcookai.databinding.ActivityMainBinding
+import com.example.smartcookai.utils.filter.FilterBottomSheet
+import com.example.smartcookai.utils.filter.QuickFilter
+import com.example.smartcookai.utils.filter.QuickFilterAdapter
+import com.example.smartcookai.utils.filter.RecipeFilter
 import com.example.smartcookai.viewmodel.RecipeViewModel
 import com.example.smartcookai.viewmodel.RecipeViewModelFactory
 import com.google.android.material.snackbar.Snackbar
@@ -22,12 +26,16 @@ class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var adapter: RecipeAdapter
     private lateinit var recipeViewModel: RecipeViewModel
+    private lateinit var quickFilterAdapter: QuickFilterAdapter  // Адаптер быстрых фильтров
     private var allRecipes: List<RecipeEntity> = emptyList()
 
     // Переменная для отслеживания последнего измененного рецепта для отмены
     private var lastModifiedRecipe: RecipeEntity? = null
     private var wasFavorite: Boolean = false
     private var currentSearchQuery: String = ""
+
+    private var currentFilter: RecipeFilter = RecipeFilter() // Полные фильтры
+    private var activeQuickFilters = mutableSetOf<QuickFilter>() // Быстрые фильтры
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +49,7 @@ class MainActivity : BaseActivity() {
         recipeViewModel = ViewModelProvider(this, factory).get(RecipeViewModel::class.java)
 
         setupRecyclerView()
+        setupQuickFilters()
         observeAllRecipes()
         setupSearch()
         setupBottomNavigation()
@@ -211,6 +220,163 @@ class MainActivity : BaseActivity() {
         updateUI(filteredRecipes)
     }
 
+    /**
+     * НАСТРОЙКА ГОРИЗОНТАЛЬНОГО СПИСКА БЫСТРЫХ ФИЛЬТРОВ
+     */
+    private fun setupQuickFilters() {
+        // Создаем адаптер с 6 фильтрами
+        quickFilterAdapter = QuickFilterAdapter(
+            filters = QuickFilter.getAll(),
+            onFilterClick = { filter ->
+                // Клик на обычный фильтр (⚡, 🥗, 💪...)
+                toggleQuickFilter(filter)
+            },
+            onAllFiltersClick = {
+                // Клик на "⚙️ Все фильтры"
+                showFullFilterBottomSheet()
+            }
+        )
+
+        binding.rvQuickFilters.apply {
+            adapter = quickFilterAdapter
+
+            // Горизонтальный LinearLayoutManager
+            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(
+                this@MainActivity,
+                androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL,
+                false
+            )
+
+            // Отступы между чипами (8dp справа)
+            addItemDecoration(object : androidx.recyclerview.widget.RecyclerView.ItemDecoration() {
+                override fun getItemOffsets(
+                    outRect: android.graphics.Rect,
+                    view: android.view.View,
+                    parent: androidx.recyclerview.widget.RecyclerView,
+                    state: androidx.recyclerview.widget.RecyclerView.State
+                ) {
+                    outRect.right = 8
+                }
+            })
+        }
+    }
+
+    /**
+     * ПЕРЕКЛЮЧЕНИЕ БЫСТРОГО ФИЛЬТРА
+     * Добавляет/убирает фильтр из активных
+     */
+    private fun toggleQuickFilter(filter: QuickFilter) {
+        if (activeQuickFilters.contains(filter)) {
+            activeQuickFilters.remove(filter)
+        } else {
+            activeQuickFilters.add(filter)
+        }
+        applyAllFilters()  // Пересчитываем список
+
+        // Показываем подсказку: "Фильтр «Быстрые»: найдено 12 рецептов"
+        showFilterAppliedHint(filter)
+    }
+
+    /**
+     * ПОДСКАЗКА при применении фильтра
+     */
+    private fun showFilterAppliedHint(filter: QuickFilter) {
+        if (activeQuickFilters.contains(filter)) {
+            val count = allRecipes.count { filter.matches(it) }
+            val message = "Фильтр «${filter.label}»: найдено $count рецептов"
+
+            Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT)
+                .setAnchorView(binding.bottomBar.bottomBar)
+                .show()
+        }
+    }
+
+    /**
+     * ОТКРЫТИЕ BOTTOMSHEET с полными фильтрами
+     */
+    private fun showFullFilterBottomSheet() {
+        val filterSheet = FilterBottomSheet(
+            currentFilter = currentFilter,
+            onApplyFilter = { newFilter ->
+                // Применили фильтры
+                currentFilter = newFilter
+                activeQuickFilters.clear()
+                quickFilterAdapter.clearFilters()
+                applyAllFilters()
+            },
+            onDismissWithoutChanges = {
+                // ← НОВОЕ: закрыли без изменений
+                // Ничего не делаем, фильтры остаются как были
+                // QuickFilterAdapter автоматически обновится
+                quickFilterAdapter.notifyItemChanged(0)
+            }
+        )
+        filterSheet.show(supportFragmentManager, FilterBottomSheet.TAG)
+    }
+
+    /**
+     * ПРИМЕНЕНИЕ ВСЕХ ФИЛЬТРОВ
+     * Порядок: Поиск → Быстрые фильтры → Полные фильтры
+     */
+
+    private fun applyAllFilters() {
+        var filteredRecipes = allRecipes
+
+        // ШАГ 1: Текстовый поиск
+        if (currentSearchQuery.isNotBlank()) {
+            val normalizedQuery = currentSearchQuery.lowercase().trim()
+
+            filteredRecipes = if (normalizedQuery.contains(",")) {
+                // Поиск по ингредиентам через запятую
+                val ingredientsQuery = normalizedQuery
+                    .split(",")
+                    .map { it.trim() }
+                    .filter { it.isNotEmpty() }
+
+                filteredRecipes.filter { recipe ->
+                    val recipeIngredients = recipe.ingredients.lowercase()
+                    ingredientsQuery.all { ingredient ->
+                        recipeIngredients.contains(ingredient)
+                    }
+                }
+            } else {
+                // Обычный поиск по словам
+                val words = normalizedQuery
+                    .split("\\s+".toRegex())
+                    .filter { it.isNotEmpty() }
+
+                filteredRecipes.filter { recipe ->
+                    val text = (
+                            recipe.title + " " +
+                                    recipe.ingredients + " " +
+                                    recipe.description
+                            ).lowercase()
+
+                    words.all { word ->
+                        text.contains(word)
+                    }
+                }
+            }
+        }
+
+        // ШАГ 2: Быстрые фильтры (все должны совпадать - AND логика)
+        if (activeQuickFilters.isNotEmpty()) {
+            filteredRecipes = filteredRecipes.filter { recipe ->
+                activeQuickFilters.all { filter ->
+                    filter.matches(recipe)
+                }
+            }
+        }
+
+        // ШАГ 3: Полные фильтры из BottomSheet
+        if (currentFilter.isActive()) {
+            filteredRecipes = filteredRecipes.filter { recipe ->
+                currentFilter.matches(recipe)
+            }
+        }
+
+        updateUI(filteredRecipes)
+    }
 
     private fun updateUI(recipes: List<RecipeEntity>) {
 
@@ -251,6 +417,26 @@ class MainActivity : BaseActivity() {
     private fun hideEmptyState() {
         binding.rvRecipes.visibility = android.view.View.VISIBLE
         binding.tvEmptyAll.visibility = android.view.View.GONE
+    }
+
+    /**
+     * ОПИСАНИЕ АКТИВНЫХ ФИЛЬТРОВ
+     */
+    private fun getActiveFiltersDescription(): String {
+        val parts = mutableListOf<String>()
+
+        if (activeQuickFilters.isNotEmpty()) {
+            val labels = activeQuickFilters.joinToString(", ") {
+                "$${it.label}"
+            }
+            parts.add(labels)
+        }
+
+        if (currentFilter.isActive()) {
+            parts.add(currentFilter.getActiveFiltersDescription())
+        }
+
+        return parts.joinToString(" • ")
     }
 
     private fun setupBottomNavigation() {
