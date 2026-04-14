@@ -2,9 +2,9 @@ package com.example.smartcookai
 
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.os.Build
 import android.os.Bundle
-import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import android.view.ViewTreeObserver
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -25,6 +25,19 @@ class RecipeDetailsActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.setBackgroundDrawable(null)
+            postponeEnterTransition()
+
+            // ← ДОБАВЛЕНО: Максимальное время ожидания 100ms
+            window.decorView.postDelayed({
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    startPostponedEnterTransition()
+                }
+            }, 100)
+        }
+
         binding = ActivityRecipeDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -33,7 +46,19 @@ class RecipeDetailsActivity : BaseActivity() {
         val factory = RecipeViewModelFactory(repo)
         recipeViewModel = ViewModelProvider(this, factory).get(RecipeViewModel::class.java)
 
-        currentRecipe = intent.getParcelableExtra("recipe")
+        currentRecipe = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra("recipe", RecipeEntity::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getParcelableExtra("recipe")
+        }
+
+        currentRecipe?.let { recipe ->
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                binding.ivRecipeDetailsImage.transitionName = "recipe_image_${recipe.id}"
+            }
+        }
+
         currentRecipe?.id?.let { id ->
             recipeViewModel.getRecipeByIdLive(id)
                 .observe(this) { updatedRecipe ->
@@ -83,11 +108,29 @@ class RecipeDetailsActivity : BaseActivity() {
             binding.tvNutritionTotal.text =
                 "Всего: ${recipe.totalKcal.toInt()} ккал | Б ${recipe.totalProtein.toInt()} г | Ж ${recipe.totalFat.toInt()} г | У ${recipe.totalCarbs.toInt()} г"
 
+            // ← ИЗМЕНЕНО: Упрощенная загрузка изображения
             if (!recipe.imagePath.isNullOrEmpty()) {
                 val bitmap = BitmapFactory.decodeFile(recipe.imagePath)
                 if (bitmap != null) {
                     binding.ivRecipeDetailsImage.setImageBitmap(bitmap)
+                } else {
+                    binding.ivRecipeDetailsImage.setImageResource(R.drawable.ic_gallery)
                 }
+            } else {
+                binding.ivRecipeDetailsImage.setImageResource(R.drawable.ic_gallery)
+            }
+
+            // ← ИЗМЕНЕНО: Запускаем анимацию сразу после установки изображения
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                binding.ivRecipeDetailsImage.viewTreeObserver.addOnPreDrawListener(
+                    object : ViewTreeObserver.OnPreDrawListener {
+                        override fun onPreDraw(): Boolean {
+                            binding.ivRecipeDetailsImage.viewTreeObserver.removeOnPreDrawListener(this)
+                            startPostponedEnterTransition()
+                            return true
+                        }
+                    }
+                )
             }
         } ?: run {
             showErrorAndClose()
@@ -134,12 +177,9 @@ class RecipeDetailsActivity : BaseActivity() {
             actionText = "Отменить"
         ) {
             handler.removeCallbacks(navigateRunnable)
-
             recipeViewModel.addRecipe(recipe)
-
             showUndoSnackbar("Рецепт восстановлен")
         }
-
     }
 
     private fun showErrorAndClose() {
@@ -150,7 +190,9 @@ class RecipeDetailsActivity : BaseActivity() {
     }
 
     private fun navigateToMain() {
-        startActivity(Intent(this, MainActivity::class.java))
+        val intent = Intent(this, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        startActivity(intent)
         finish()
     }
 
@@ -159,7 +201,6 @@ class RecipeDetailsActivity : BaseActivity() {
         actionText: String? = null,
         action: (() -> Unit)? = null
     ) {
-
         val snackbar = Snackbar.make(
             window.decorView.findViewById(android.R.id.content),
             message,
@@ -206,6 +247,16 @@ class RecipeDetailsActivity : BaseActivity() {
         binding.bottomBar.tabSettings.setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
             finish()
+        }
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            finishAfterTransition()
+        } else {
+            @Suppress("DEPRECATION")
+            super.onBackPressed()
         }
     }
 }

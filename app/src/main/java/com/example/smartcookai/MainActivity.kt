@@ -1,9 +1,12 @@
 package com.example.smartcookai
 
+import android.app.ActivityOptions
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -142,10 +145,8 @@ class MainActivity : BaseActivity() {
 
         adapter = RecipeAdapter(
             emptyList(),
-            onItemClick = { recipe ->
-                val intent = Intent(this, RecipeDetailsActivity::class.java)
-                intent.putExtra("recipe", recipe)
-                startActivity(intent)
+            onItemClick = { recipe, imageView ->
+                openRecipeDetails(recipe, imageView)
             },
             onFavoriteClick = { recipe ->
                 toggleFavoriteImmediately(recipe)
@@ -156,6 +157,21 @@ class MainActivity : BaseActivity() {
 
         val spacingInPixels = resources.getDimensionPixelSize(R.dimen.card_spacing)
         binding.rvRecipes.addItemDecoration(GridSpacingItemDecoration(2, spacingInPixels, true))
+    }
+
+    private fun openRecipeDetails(recipe: RecipeEntity, imageView: View) {
+        val intent = Intent(this, RecipeDetailsActivity::class.java)
+        intent.putExtra("recipe", recipe)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val options = ActivityOptions.makeSceneTransitionAnimation(
+                this,
+                android.util.Pair(imageView, "recipe_image_${recipe.id}"),
+            )
+            startActivity(intent, options.toBundle())
+        } else {
+            startActivity(intent)
+        }
     }
 
     private fun toggleFavoriteImmediately(recipe: RecipeEntity) {
@@ -187,9 +203,9 @@ class MainActivity : BaseActivity() {
         )
 
         val snackbarView = snackbar.view
-        val textView =
-            snackbarView.findViewById<android.widget.TextView>(com.google.android.material.R.id.snackbar_text)
-        textView.maxLines = 3
+//        val textView =
+//            snackbarView.findViewById<android.widget.TextView>(com.google.android.material.R.id.snackbar_text)
+//        textView.maxLines = 3
 
         val params = snackbarView.layoutParams as? CoordinatorLayout.LayoutParams
         params?.apply {
@@ -233,19 +249,13 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    /**
-     * ← ИСПРАВЛЕННЫЙ МЕТОД
-     * Применяет поиск и фильтры в правильном порядке
-     */
     private fun applyAllFilters() {
         var filteredRecipes = allRecipes
 
-        // ШАГ 1: Применяем текстовый поиск
         if (currentSearchQuery.isNotBlank()) {
             filteredRecipes = applySearchToRecipes(filteredRecipes, currentSearchQuery)
         }
 
-        // ШАГ 2: Применяем быстрые фильтры
         if (activeQuickFilters.isNotEmpty()) {
             filteredRecipes = filteredRecipes.filter { recipe ->
                 activeQuickFilters.all { filter ->
@@ -254,7 +264,6 @@ class MainActivity : BaseActivity() {
             }
         }
 
-        // ШАГ 3: Применяем полные фильтры
         if (currentFilter.isActive()) {
             filteredRecipes = filteredRecipes.filter { recipe ->
                 currentFilter.matches(recipe)
@@ -264,10 +273,6 @@ class MainActivity : BaseActivity() {
         updateUI(filteredRecipes)
     }
 
-    /**
-     * ← НОВЫЙ МЕТОД
-     * Вынесли логику поиска в отдельный метод для переиспользования
-     */
     private fun applySearchToRecipes(
         recipes: List<RecipeEntity>,
         query: String
@@ -323,7 +328,7 @@ class MainActivity : BaseActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 currentSearchQuery = s?.toString() ?: ""
-                applyAllFilters() // ← Вызываем общий метод фильтрации
+                applyAllFilters()
             }
 
             override fun afterTextChanged(s: Editable?) {}

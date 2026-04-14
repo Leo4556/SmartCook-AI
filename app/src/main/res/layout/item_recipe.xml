@@ -19,12 +19,13 @@
         android:orientation="vertical">
 
         <!-- Фото блюда -->
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/ivRecipeImage"
             android:layout_width="match_parent"
             android:minHeight="160dp"
             android:layout_height="180dp"
             android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/RoundedImageView"
             android:contentDescription="Фото блюда"
             android:background="@color/colorAccentLight"
             android:src="@drawable/ic_home"/>

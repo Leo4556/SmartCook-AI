@@ -10,7 +10,7 @@
     <style name="Theme.SmartCookAI" parent="Theme.Material3.DayNight.NoActionBar">
 
         <item name="android:statusBarColor">@color/colorBackground</item>
-        <item name="android:forceDarkAllowed">false</item>
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
         <item name="android:windowLightStatusBar">true</item>
 
 
@@ -29,6 +29,11 @@
         <item name="cursorColor">@color/colorTextPrimary</item>
         <item name="hintTextColor">@color/colorTextSecondary</item>
 
+    </style>
+
+    <style name="RoundedImageView">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
     </style>
 
 </resources>
