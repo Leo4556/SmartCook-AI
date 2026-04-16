@@ -132,11 +132,7 @@ class ScanActivity : BaseActivity() {
                     )
                 }
             }
-
-            if (counted > 0) {
-                val averageRisk = totalRisk / counted
-                resultBuilder.append("Общая оценка риска: $averageRisk / 3")
-            }
+            
 
             ResultBottomSheetFragment(resultBuilder) {}
                 .show(supportFragmentManager, "result")
