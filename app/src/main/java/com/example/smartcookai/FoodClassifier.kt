@@ -13,11 +13,11 @@ import java.nio.ByteOrder
 class FoodClassifier(context: Context) {
 
     companion object {
-        private const val MODEL_FILE = "1.tflite"
+        private const val MODEL_FILE = "food_corrected_f32.tflite"
         private const val LABELS_FILE = "labels.txt"
         private const val METADATA_FILE = "food_metadata.json"
 
-        private const val DEFAULT_IMAGE_SIZE = 224
+        private const val DEFAULT_IMAGE_SIZE = 192
         private const val IMAGE_CHANNELS = 3
     }
 

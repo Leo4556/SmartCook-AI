@@ -27,26 +27,30 @@ class DescriptionFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.etRecipeDescription.setText(sharedViewModel.description)
+
         sharedViewModel.descriptionLiveData.observe(viewLifecycleOwner) { description ->
-            if (description.isNotEmpty()) {
+            if (binding.etRecipeDescription.text.toString() != description) {
                 binding.etRecipeDescription.setText(description)
             }
         }
 
-        binding.etRecipeDescription.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                sharedViewModel.description = binding.etRecipeDescription.text.toString()
+        binding.etRecipeDescription.addTextChangedListener {
+            val newText = it.toString()
+            if (sharedViewModel.description != newText) {
+                sharedViewModel.description = newText
             }
         }
-
     }
 
-    fun getDescription(): String {
-        return binding.etRecipeDescription.text.toString()
+    fun updateDescription(description: String) {
+        binding.etRecipeDescription.setText(description)
+        sharedViewModel.description = description
     }
 
     fun clearDescription() {
         binding.etRecipeDescription.text?.clear()
+        sharedViewModel.description = ""
     }
 
     override fun onDestroyView() {

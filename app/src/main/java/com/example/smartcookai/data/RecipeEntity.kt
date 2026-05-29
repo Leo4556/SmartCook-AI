@@ -18,6 +18,8 @@ data class RecipeEntity(
     val imagePath: String?,     // uri фото блюда
     val isFavorite: Boolean = true,
 
+    val servings: Int = 1,
+
     val totalKcal: Double = 0.0,
     val totalProtein: Double = 0.0,
     val totalFat: Double = 0.0,

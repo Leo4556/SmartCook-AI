@@ -1,11 +1,12 @@
 package com.example.smartcookai
 
+import android.app.ActivityOptions
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -54,18 +55,33 @@ class FavouritesActivity : BaseActivity() {
 
         adapter = RecipeAdapter(
             emptyList(),
-            onItemClick = { recipe ->
-                val intent = Intent(this, RecipeDetailsActivity::class.java)
-                intent.putExtra("recipe", recipe)
-                startActivity(intent)
+            onItemClick = { recipe, imageView -> // ← ИЗМЕНЕНО: добавлены View параметры
+                openRecipeDetails(recipe, imageView)
             },
             onFavoriteClick = { recipe ->
-                // Сразу удаляем из избранного и обновляем UI
                 removeFromFavoritesImmediately(recipe)
             }
         )
 
         binding.rvFavourites.adapter = adapter
+    }
+
+    // ← НОВЫЙ МЕТОД: открытие деталей с анимацией
+    private fun openRecipeDetails(recipe: RecipeEntity, imageView: View) {
+        val intent = Intent(this, RecipeDetailsActivity::class.java)
+        intent.putExtra("recipe", recipe)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // ← ИЗМЕНЕНО: анимируем только изображение
+            val options = ActivityOptions.makeSceneTransitionAnimation(
+                this,
+                imageView,
+                "recipe_image_${recipe.id}"
+            )
+            startActivity(intent, options.toBundle())
+        } else {
+            startActivity(intent)
+        }
     }
 
     private fun removeFromFavoritesImmediately(recipe: RecipeEntity) {
@@ -129,7 +145,6 @@ class FavouritesActivity : BaseActivity() {
         }
     }
 
-
     private fun observeFavorites() {
         recipeViewModel.getFavouriteRecipes().observe(this) { favouriteRecipes ->
             allFavouriteRecipes = favouriteRecipes.filter { it.isFavorite }
@@ -137,50 +152,57 @@ class FavouritesActivity : BaseActivity() {
         }
     }
 
-
     private fun setupSearch() {
-
         binding.searchLayout.visibility = android.view.View.VISIBLE
 
         binding.etSearch.addTextChangedListener(object : TextWatcher {
-
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
                 currentSearchQuery = s?.toString() ?: ""
                 applySearch(currentSearchQuery)
             }
 
             override fun afterTextChanged(s: Editable?) {}
-
         })
     }
 
     private fun applySearch(query: String) {
-
         val filteredRecipes = if (query.isNotBlank()) {
+            val normalizedQuery = query.lowercase().trim()
 
-            val words = query
-                .lowercase()
-                .trim()
-                .split("\\s+".toRegex())
+            if (normalizedQuery.contains(",")) {
+                // Поиск по ингредиентам через запятую
+                val ingredientsQuery = normalizedQuery
+                    .split(",")
+                    .map { it.trim() }
+                    .filter { it.isNotEmpty() }
 
-            allFavouriteRecipes.filter { recipe ->
+                allFavouriteRecipes.filter { recipe ->
+                    val recipeIngredients = recipe.ingredients.lowercase()
 
-                val text = (
-                        recipe.title +
-                                " " +
-                                recipe.ingredients +
-                                " " +
-                                recipe.description
-                        ).lowercase()
+                    ingredientsQuery.all { ingredient ->
+                        recipeIngredients.contains(ingredient)
+                    }
+                }
+            } else {
+                // Обычный поиск по названию, описанию и ингредиентам
+                val words = normalizedQuery
+                    .split("\\s+".toRegex())
+                    .filter { it.isNotEmpty() }
 
-                words.all { word ->
-                    text.contains(word)
+                allFavouriteRecipes.filter { recipe ->
+                    val text = (
+                            recipe.title + " " +
+                                    recipe.ingredients + " " +
+                                    recipe.description
+                            ).lowercase()
+
+                    words.all { word ->
+                        text.contains(word)
+                    }
                 }
             }
-
         } else {
             allFavouriteRecipes
         }
@@ -189,7 +211,6 @@ class FavouritesActivity : BaseActivity() {
     }
 
     private fun updateUI(recipes: List<RecipeEntity>) {
-
         adapter.updateList(recipes)
 
         if (recipes.isEmpty()) {
@@ -198,7 +219,6 @@ class FavouritesActivity : BaseActivity() {
             hideEmptyState()
         }
     }
-
 
     private fun showEmptyState() {
         binding.rvFavourites.visibility = android.view.View.GONE
@@ -216,7 +236,6 @@ class FavouritesActivity : BaseActivity() {
         binding.rvFavourites.visibility = android.view.View.VISIBLE
         binding.tvEmptyFavorites.visibility = android.view.View.GONE
     }
-
 
     private fun setupBottomNavigation() {
         // Подсветим текущую вкладку "Избранное"
